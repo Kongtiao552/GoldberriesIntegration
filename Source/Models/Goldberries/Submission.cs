@@ -36,9 +36,11 @@ public class Submission {
         string result = Challenge.Map?.Name;
 
         if (result == null) {
-            result = Challenge.Label;
+            // FGR
+            result = Challenge.Campaign.Name + " " + Challenge.Label;
         } else {
             if (Challenge.Label != null) {
+                // Arbitrary Challenge
                 result += $" ({Challenge.Label})";
             }
         }

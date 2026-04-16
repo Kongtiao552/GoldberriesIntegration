@@ -28,6 +28,8 @@ public class MilestonesTab : PageTab {
     private float TableLabelSize = 0.4f;
     private float TableRowHeight = 30f;
 
+    private int SubmissionStringMaxLength = 30;
+
     private Vector2 DrawSubmission(Vector2 pointer, Submission submission) {
         if (submission == null) {
             ActiveFont.Draw("-", pointer, Vector2.Zero, Vector2.One * TableLabelSize, Color.Black);
@@ -36,6 +38,12 @@ public class MilestonesTab : PageTab {
         }
 
         Color color = GoldberriesStatsManager.TierColors[submission.Challenge.Difficulty.Name];
+
+        string submissionString = submission.ToString();
+
+        if (submissionString.Length > SubmissionStringMaxLength) {
+            submissionString = submissionString.Substring(0, SubmissionStringMaxLength) + " ...";
+        }
 
         string statString;
         
@@ -46,7 +54,7 @@ public class MilestonesTab : PageTab {
         }
 
         ActiveFont.DrawOutline(
-            submission.ToString(), 
+            submissionString, 
             pointer,
             Vector2.Zero,
             Vector2.One * TableLabelSize,
