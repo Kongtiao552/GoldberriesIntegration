@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
-using Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
 using Celeste.Mod.GoldberriesIntegration.Misc;
 using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
-using IL.Monocle;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 
@@ -22,8 +18,6 @@ public static class GoldberriesStatsManager {
     public static bool Initialized { get; set; } = false;
 
     public static bool StatsFetched { get; set; } = false;
-
-    public static bool IsFetching { get; set; } = false;
 
     public static PlayerInfo PlayerInfo { get; set; }
 
@@ -63,34 +57,22 @@ public static class GoldberriesStatsManager {
         ResetStatsFile();
     }
 
-    private static readonly string fetchingString = " (Fetching...)";
-
-    public static void Fetch(int playerId, TextMenu.Button fetchButton, TextMenu.Button resetButton) {
-        if (IsFetching) {
-            Utils.Log("It's already fetching right now. You're not allowed to fetch stats again utill the fetching process is completed", LogLevel.Warn);
-            return;
-        };
-
+    public static async Task Fetch(int playerId) {
         Utils.Log("Fetching Stats From goldberries.net", LogLevel.Info);
-
-        IsFetching = true;
-        fetchButton.Disabled = IsFetching;
-        fetchButton.Label += fetchingString;
-        resetButton.Disabled = IsFetching;
 
         try {
             using HttpClient client = new HttpClient();
-            HttpResponseMessage response = client.GetAsync($"{PlayerInfo.URL}?id={playerId}").GetAwaiter().GetResult();
+            HttpResponseMessage response = await client.GetAsync($"{PlayerInfo.URL}?id={playerId}");
 
             if (response.StatusCode != HttpStatusCode.OK) {
                 Utils.Log("Failed to fetch stats", LogLevel.Error);
                 throw new HttpRequestException("Failed to fetch stats. Status Code: " + (int) response.StatusCode);
             }
 
-            string json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            string json = await response.Content.ReadAsStringAsync();
             PlayerInfo = JsonConvert.DeserializeObject<PlayerInfo>(json);
 
-            json = client.GetStringAsync($"{Submission.URL}?player_id={playerId}&arbitrary=true&archived=true").GetAwaiter().GetResult();
+            json = await client.GetStringAsync($"{Submission.URL}?player_id={playerId}&arbitrary=true&archived=true");
             Submissions = JsonConvert.DeserializeObject<List<Submission>>(json);
 
             if (Submissions.Count == 0) return;
@@ -100,11 +82,7 @@ public static class GoldberriesStatsManager {
             Initialize();
         } catch (HttpRequestException e) {
             Utils.Log($"Network error: {e.Message}", LogLevel.Error);
-        } finally {
-            IsFetching = false;
-            fetchButton.Disabled = IsFetching;
-            fetchButton.Label = fetchButton.Label.Replace(fetchingString, "");
-            resetButton.Disabled = IsFetching;
+            throw;
         }
     }
 

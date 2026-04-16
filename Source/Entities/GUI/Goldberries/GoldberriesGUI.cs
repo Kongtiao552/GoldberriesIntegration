@@ -8,7 +8,7 @@ namespace Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
 
 public class GoldberriesGUI : InGameWindow {
 
-    public static readonly Color GoldberriesGUIColor = new Color(255, 242, 204);
+    public override Color WindowColor { get; set; } = new Color(255, 242, 204);
 
     public static readonly Color HighlightTabColor = new Color(255, 217, 102);
 
@@ -21,8 +21,6 @@ public class GoldberriesGUI : InGameWindow {
     public static GoldberriesGUI Instance { get; } = new GoldberriesGUI();
 
     public GoldberriesGUI() : base() {
-        WindowColor = GoldberriesGUIColor;
-
         TabList.Add(new TimeSpentTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB1"));
         TabList.Add(new GoldberriesPointTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB2"));
         TabList.Add(new MilestonesTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB3"));

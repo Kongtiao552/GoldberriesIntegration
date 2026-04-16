@@ -2,6 +2,8 @@ using Celeste;
 using Celeste.Mod.GoldberriesIntegration.Stats;
 using Celeste.Mod.GoldberriesIntegration.Menu;
 using Microsoft.Xna.Framework;
+using Celeste.Mod.GoldberriesIntegration.Misc;
+using System;
 
 namespace Celeste.Mod.GoldberriesIntegration;
 
@@ -26,7 +28,25 @@ public class GoldberriesIntegrationModuleSettings : EverestModuleSettings {
 
         DoubleComfirmationButton fetchStatsButton = new DoubleComfirmationButton(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_FETCH_BUTTON"), Color.Yellow);
 
-        fetchStatsButton.OnDoubleComfirmation = () => GoldberriesStatsManager.Fetch(PlayerId, fetchStatsButton, resetStatsButton);
+        fetchStatsButton.OnDoubleComfirmation = async () => {
+            string fetchingString = " (Fetching...)";
+            string failedString = " (Failed to fetch stats)";
+
+            fetchStatsButton.Disabled = true;
+            fetchStatsButton.Label += fetchingString;
+            resetStatsButton.Disabled = true;
+
+            try {
+                await GoldberriesStatsManager.Fetch(PlayerId);
+
+                fetchStatsButton.Disabled = false;
+                fetchStatsButton.Label = fetchStatsButton.Label.Replace(fetchingString, "");
+                resetStatsButton.Disabled = false;
+            } catch (Exception) {
+                fetchStatsButton.Label = fetchStatsButton.Label.Replace(fetchingString, failedString);
+            }
+        };
+
         fetchStatsButton.Disabled = PlayerId < 1;
 
         subMenu.Add(fetchStatsButton);

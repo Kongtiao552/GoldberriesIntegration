@@ -29,6 +29,9 @@ public class Submission {
     [JsonProperty("is_fc")]
     public bool IsFc { get; set; }
 
+    [JsonProperty("is_obsolete")]
+    public bool IsObsolete { get; set; }
+
     public override string ToString() {
         string result = Challenge.Map?.Name;
 

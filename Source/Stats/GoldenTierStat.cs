@@ -55,13 +55,17 @@ public class GoldenTierStat : GBStat {
                     submissionTier.Longest = submission;
                 }
 
-                submissionTier.TimeSpent += submission.TimeTaken.Value;
-                TotalTimeSpent += submission.TimeTaken.Value;
+                if (!submission.IsObsolete) {
+                    submissionTier.TimeSpent += submission.TimeTaken.Value;
+                    TotalTimeSpent += submission.TimeTaken.Value;
+                }
             }
 
-            double gp = GetGP(tier);
-            submissionTier.GoldberriesPoints += gp;
-            TotalGoldberriesPoints += gp;
+            if (!submission.IsObsolete) {
+                double gp = GetGP(tier);
+                submissionTier.GoldberriesPoints += gp;
+                TotalGoldberriesPoints += gp;
+            }
 
             if (!submissionTier.HasBeenDone) {
                 submissionTier.FirstAchieved = submission;

@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Celeste;
 using Celeste.Mod.GoldberriesIntegration.Misc;
 using Microsoft.Xna.Framework;
 using Monocle;
 
 namespace Celeste.Mod.GoldberriesIntegration.Entities.GUI;
 
-public class InGameWindow : Entity {
+public abstract class InGameWindow : Entity {
 
     public static GoldberriesIntegrationModuleSettings ModSettings => GoldberriesIntegrationModule.ModSettings;
 
@@ -21,7 +19,7 @@ public class InGameWindow : Entity {
     public static readonly Vector2 WindowPosition = new Vector2(WindowPositionX, WindowPositionY);
     public static readonly Vector2 WindowSize = new Vector2(WindowWidth, WindowHeight);
 
-    public Color WindowColor { get; set; } = Color.Gray;
+    public virtual Color WindowColor { get; set; } = Color.Gray;
 
     public static readonly int WindowDepth = -105;
 
