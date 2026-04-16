@@ -22,14 +22,14 @@ public class GoldberriesIntegrationModuleSettings : EverestModuleSettings {
     public void CreateStatsOptionsEntry(TextMenu menu, bool inGame) {
         TextMenuExt.SubMenu subMenu = new TextMenuExt.SubMenu(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS"), false);
 
-        DoubleComfirmationButton resetStatsButton = new DoubleComfirmationButton(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_RESET_BUTTON"), Color.Red) {
-            OnDoubleComfirmation = GoldberriesStatsManager.Reset,
+        DoubleConfirmationButton resetStatsButton = new DoubleConfirmationButton(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_RESET_BUTTON"), Color.Red) {
+            OnDoubleConfirmation = GoldberriesStatsManager.Reset,
             Disabled = !GoldberriesStatsManager.StatsFetched
         };
 
-        DoubleComfirmationButton fetchStatsButton = new DoubleComfirmationButton(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_FETCH_BUTTON"), Color.Yellow);
+        DoubleConfirmationButton fetchStatsButton = new DoubleConfirmationButton(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_FETCH_BUTTON"), Color.Yellow);
 
-        fetchStatsButton.OnDoubleComfirmation = async () => {
+        fetchStatsButton.OnDoubleConfirmation = async () => {
             string fetchingString = " (Fetching...)";
             string failedString = " (Failed to fetch stats)";
 

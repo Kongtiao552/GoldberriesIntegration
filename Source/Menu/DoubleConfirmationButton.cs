@@ -3,19 +3,19 @@ using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.GoldberriesIntegration.Menu;
 
-public class DoubleComfirmationButton : ColoredButton {
+public class DoubleConfirmationButton : ColoredButton {
 
     private bool PressedOnce { get; set; } = false;
 
-    public Action OnDoubleComfirmation { get; set; }
+    public Action OnDoubleConfirmation { get; set; }
 
     private static readonly string confirmString = " - Confirm";
 
-    public DoubleComfirmationButton(string label, Color color) : base(label, color) {
+    public DoubleConfirmationButton(string label, Color color) : base(label, color) {
         OnPressed = () => {
             if (PressedOnce) {
                 UpdateStatus(false);
-                OnDoubleComfirmation?.Invoke();
+                OnDoubleConfirmation?.Invoke();
             } else {
                 UpdateStatus(true);
             }
