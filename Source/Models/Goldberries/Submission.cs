@@ -37,12 +37,10 @@ public class Submission {
 
         if (result == null) {
             // FGR
-            result = Challenge.Campaign.Name + " " + Challenge.Label;
-        } else {
-            if (Challenge.Label != null) {
-                // Arbitrary Challenge
-                result += $" ({Challenge.Label})";
-            }
+            result = $"{Challenge.Campaign.Name} ({Challenge.Label})";
+        } else if (Challenge.Label != null) {
+            // Arbitrary Challenge
+            result += $" ({Challenge.Label})";
         }
 
         if (IsFc) {

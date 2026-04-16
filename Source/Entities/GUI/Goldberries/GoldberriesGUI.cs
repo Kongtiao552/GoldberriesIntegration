@@ -92,11 +92,11 @@ public class GoldberriesGUI : InGameWindow {
 
         TabList[SelectedTab].Update();
 
-        if (Input.MenuRight.Pressed && !ModSettings.ButtonTogglePageModifier.Check && SelectedTab + 1 < TabCount) {
+        if (Input.MenuRight.Pressed && SelectedTab + 1 < TabCount) {
             SelectedTab++;
         }
         
-        if (Input.MenuLeft.Pressed && !ModSettings.ButtonTogglePageModifier.Check && SelectedTab - 1 >= 0) {
+        if (Input.MenuLeft.Pressed && SelectedTab - 1 >= 0) {
             SelectedTab--;
         }
     }

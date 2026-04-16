@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Celeste.Mod.GoldberriesIntegration.Stats;
 using Monocle;
 
@@ -10,9 +11,14 @@ public static class ConsoleCommands {
     private static GoldberriesIntegrationModule Module => GoldberriesIntegrationModule.Instance;
     
     [Command("gb_player_id", "get or set the player id")]
-    public static void GbPlayerId(int playerId = 0) {
-        if (playerId < 1) {
+    public static void GbPlayerId(string stringpPlayerId = null) {
+        if (string.IsNullOrEmpty(stringpPlayerId)) {
             Engine.Commands.Log($"Player ID: {ModSettings.PlayerId}");
+            return;
+        }
+
+        if (!int.TryParse(stringpPlayerId, out int playerId) || playerId < 1) {
+            Engine.Commands.Log("Please input a valid player id!");
             return;
         }
 
@@ -24,7 +30,7 @@ public static class ConsoleCommands {
     private static bool IsFetching { get; set; } = false;
 
     [Command("gb_fetch_stats", "fetch stats from goldberries.net")]
-    public static async void GbFetchStats() {
+    public static async Task GbFetchStats() {
         if (ModSettings.PlayerId < 1) {
             Engine.Commands.Log("Please set a valid player id before fetching stats!");
             return;

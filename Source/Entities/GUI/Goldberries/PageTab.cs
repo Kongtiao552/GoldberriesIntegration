@@ -16,10 +16,12 @@ public abstract class PageTab : StatTab {
     public override void Update() {
         if (Input.MenuRight.Pressed && ModSettings.ButtonTogglePageModifier.Check && CurrentPage < PageAmount) {
             CurrentPage++;
+            Input.MenuRight.ConsumePress();
         }
 
         if (Input.MenuLeft.Pressed && ModSettings.ButtonTogglePageModifier.Check && CurrentPage > 1) {
             CurrentPage--;
+            Input.MenuLeft.ConsumePress();
         }
     }
 
