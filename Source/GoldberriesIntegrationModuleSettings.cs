@@ -4,6 +4,7 @@ using Celeste.Mod.GoldberriesIntegration.Menu;
 using Microsoft.Xna.Framework;
 using Celeste.Mod.GoldberriesIntegration.Misc;
 using System;
+using Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
 
 namespace Celeste.Mod.GoldberriesIntegration;
 
@@ -49,8 +50,16 @@ public class GoldberriesIntegrationModuleSettings : EverestModuleSettings {
 
         fetchStatsButton.Disabled = PlayerId < 1;
 
+        TextMenu.Button viewChartsButton = new TextMenu.Button(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_VIEW_CHARTS")) {
+            OnPressed = () => {
+                menu.RemoveSelf();
+                GoldberriesGUI.Instance.Show();
+            }
+        };
+
         subMenu.Add(fetchStatsButton);
         subMenu.Add(resetStatsButton);
+        subMenu.Add(viewChartsButton);
 
         menu.Add(subMenu);
     }

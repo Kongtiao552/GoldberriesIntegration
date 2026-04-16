@@ -29,8 +29,6 @@ public abstract class InGameWindow : Entity {
         Position = WindowPosition;
         Visible = false;
         Active = false;
-
-        WindowList.Add(this);
     }
 
     public override void Update() {
@@ -51,8 +49,6 @@ public abstract class InGameWindow : Entity {
     }
 
     public void Show() {
-        HideAllWindows();
-
         Visible = true;
         Active = true;
 
@@ -60,6 +56,7 @@ public abstract class InGameWindow : Entity {
             level.Paused = true;
         }
     }
+
     public void Hide() {
         Visible = false;
         Active = false;
@@ -73,10 +70,6 @@ public abstract class InGameWindow : Entity {
         if (Visible) Hide();
         else Show();
     }
-
-    public static List<InGameWindow> WindowList= new List<InGameWindow>();
-
-    public static void HideAllWindows() => WindowList.ForEach(window => window.Hide());
 
     public static void DrawText(string text, float size, Vector2 position, Color color, bool outline) {
         text = text.DialogCleanOrNull() ?? text;
