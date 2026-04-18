@@ -25,6 +25,7 @@
     <ItemGroup>
         <PackageReference Include="CelesteMod.Publicizer" Version="*" CelesteAssembly="$(CelestePrefix)\Celeste.dll" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+        <PackageReference Include="YamlDotNet" Version="16.0.0.0" />
         <Reference Include="$(CelestePrefix)\MMHOOK_Celeste.dll" Private="false" />
         <Reference Include="$(CelestePrefix)\FNA.dll" Private="false" />
     </ItemGroup>

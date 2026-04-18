@@ -6,21 +6,21 @@ using Monocle;
 
 namespace Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
 
-public class GoldberriesGUI : InGameWindow {
+public class GBStatsHUD : InGameWindow {
 
     public override Color WindowColor { get; set; } = new Color(255, 242, 204);
 
     public static readonly Color HighlightTabColor = new Color(255, 217, 102);
 
-    public List<StatTab> TabList { get; set; } = new List<StatTab>();
+    public List<Tab> TabList { get; set; } = new List<Tab>();
 
     public int SelectedTab { get; set; } = 0;
 
     public int TabCount => TabList.Count;
 
-    public static GoldberriesGUI Instance { get; } = new GoldberriesGUI();
+    public static GBStatsHUD Instance { get; } = new GBStatsHUD();
 
-    public GoldberriesGUI() : base() {
+    public GBStatsHUD() : base() {
         TabList.Add(new TimeSpentTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB1"));
         TabList.Add(new GoldberriesPointTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB2"));
         TabList.Add(new MilestonesTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB3"));

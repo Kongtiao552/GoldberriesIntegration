@@ -18,7 +18,7 @@ public static class ChartHelper {
     public delegate double ValueGetter(GoldenTier tier);
     
     public static void GBGoldenTierBarChart(LabelFormatter labelFormatter, ValueGetter valueGetter, double max, double total, string totalString) {
-        Vector2 pointer = GoldberriesGUI.TabPosition + new Vector2(120f, 20f);
+        Vector2 pointer = GBStatsHUD.TabPosition + new Vector2(120f, 20f);
         GoldenTierStat stat = GoldenTierStat.Instance;
 
         float textSize = 0.4f;
@@ -27,7 +27,7 @@ public static class ChartHelper {
         float barMaxWidth = InGameWindow.WindowWidth - 350f;
         
         totalString = TotalString + ": " + totalString;
-        ActiveFont.Draw(totalString, GoldberriesGUI.TabPosition + new Vector2(InGameWindow.WindowWidth - 20f, InGameWindow.WindowHeight - 200f), Vector2.UnitX, Vector2.One * 0.6f, Color.Black);
+        ActiveFont.Draw(totalString, GBStatsHUD.TabPosition + new Vector2(InGameWindow.WindowWidth - 20f, InGameWindow.WindowHeight - 200f), Vector2.UnitX, Vector2.One * 0.6f, Color.Black);
 
         pointer.Y += height;
         Draw.Rect(pointer, 1f, -height, Color.Black);

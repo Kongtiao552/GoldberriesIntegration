@@ -13,10 +13,6 @@ public class MilestonesTab : PageTab {
         PageAmount = 3;
     }
 
-    public override List<GBStat> RequiredStats { get; set; } = new List<GBStat>() {
-        GoldenTierStat.Instance
-    };
-
     private static GoldenTierStat GoldenTierStatInstance => GoldenTierStat.Instance;
 
     private readonly float MilestoneWidth = InGameWindow.WindowWidth / 4;
@@ -82,7 +78,7 @@ public class MilestonesTab : PageTab {
         Color color = goldenTier.GetColor();
         InGameWindow.DrawTextInCenter(goldenTier.GetTierString(), 0.8f, pointer + offset, color, true);
         
-        pointer += new Vector2(20f, GoldberriesGUI.TabContentHeight / 2 - 40f);
+        pointer += new Vector2(20f, GBStatsHUD.TabContentHeight / 2 - 40f);
         pointer.Y -= TableRowHeight * 8;
 
         ActiveFont.Draw(FastestLabel, pointer, Vector2.Zero, Vector2.One * TableLabelSize, Color.Black);
@@ -98,17 +94,17 @@ public class MilestonesTab : PageTab {
         DrawSubmission(pointer, goldenTier.FirstAchieved);
     }
 
-    public override void RenderTab() {
-        Vector2 pointer = GoldberriesGUI.TabPosition;
+    public override void Render() {
+        Vector2 pointer = GBStatsHUD.TabPosition;
 
-        Draw.Rect(new Vector2(InGameWindow.WindowPositionX, pointer.Y + GoldberriesGUI.TabContentHeight / 2), InGameWindow.WindowWidth, 2f, Color.Black);
+        Draw.Rect(new Vector2(InGameWindow.WindowPositionX, pointer.Y + GBStatsHUD.TabContentHeight / 2), InGameWindow.WindowWidth, 2f, Color.Black);
 
         for (int i = 1; i < 4; i++) {
             pointer.X += MilestoneWidth;
-            Draw.Rect(pointer, 2f, GoldberriesGUI.TabContentHeight, Color.Black);
+            Draw.Rect(pointer, 2f, GBStatsHUD.TabContentHeight, Color.Black);
         }
 
-        pointer = GoldberriesGUI.TabPosition;
+        pointer = GBStatsHUD.TabPosition;
 
         int LowestTier = (CurrentPage - 1) * 8 + 1;
 
@@ -118,8 +114,8 @@ public class MilestonesTab : PageTab {
             pointer.X += MilestoneWidth;
         }
 
-        pointer = GoldberriesGUI.TabPosition;
-        pointer.Y += GoldberriesGUI.TabContentHeight / 2;
+        pointer = GBStatsHUD.TabPosition;
+        pointer.Y += GBStatsHUD.TabContentHeight / 2;
 
         for (int i = LowestTier + 4; i < LowestTier + 8; i++) {
             if (i > GoldberriesStatsManager.TierCount) return;

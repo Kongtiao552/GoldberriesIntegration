@@ -7,19 +7,15 @@ using Celeste.Mod.GoldberriesIntegration.Stats;
 
 namespace Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
 
-public class TimeSpentTab : StatTab {
+public class TimeSpentTab : Tab {
 
     public TimeSpentTab(string title) : base(title) {
         
     }
 
-    public override List<GBStat> RequiredStats { get; set; } = new List<GBStat>() {
-        GoldenTierStat.Instance
-    };
-
     private static GoldenTierStat GoldenTierStatInstance => GoldenTierStat.Instance;
 
-    public override void RenderTab() {
+    public override void Render() {
         ChartHelper.GBGoldenTierBarChart(
             tier => $"{tier.TimeSpent.TotalHours:F2}h",
             tier => tier.TimeSpent.TotalMinutes,

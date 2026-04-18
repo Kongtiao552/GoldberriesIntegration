@@ -7,19 +7,15 @@ using Celeste.Mod.GoldberriesIntegration.Stats;
 
 namespace Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
 
-public class GoldberriesPointTab : StatTab {
+public class GoldberriesPointTab : Tab {
 
     public GoldberriesPointTab(string title) : base(title) {
         
     }
 
-    public override List<GBStat> RequiredStats { get; set; } = new List<GBStat>() {
-        GoldenTierStat.Instance
-    };
-
     private static GoldenTierStat GoldenTierStatInstance => GoldenTierStat.Instance;
 
-    public override void RenderTab() {
+    public override void Render() {
         ChartHelper.GBGoldenTierBarChart(
             tier => $"{tier.GoldberriesPoints:F2} gp",
             tier => tier.GoldberriesPoints,

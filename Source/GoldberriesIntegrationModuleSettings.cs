@@ -3,6 +3,7 @@ using Celeste.Mod.GoldberriesIntegration.Stats;
 using Celeste.Mod.GoldberriesIntegration.Menu;
 using Microsoft.Xna.Framework;
 using Celeste.Mod.GoldberriesIntegration.Misc;
+using YamlDotNet.Serialization;
 using System;
 using Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
 
@@ -17,6 +18,7 @@ public class GoldberriesIntegrationModuleSettings : EverestModuleSettings {
     [SettingNumberInput(allowNegatives: false)]
     public int PlayerId { get; set; } = 0;
     
+    [YamlIgnore]
     public bool StatsOptions { get; set; }
 
     public void CreateStatsOptionsEntry(TextMenu menu, bool inGame) {
@@ -43,7 +45,8 @@ public class GoldberriesIntegrationModuleSettings : EverestModuleSettings {
                 fetchStatsButton.Disabled = false;
                 fetchStatsButton.Label = fetchStatsButton.Label.Replace(fetchingString, "");
                 resetStatsButton.Disabled = false;
-            } catch (Exception) {
+            } catch (Exception e) {
+                Utils.Log($"Error fetching stats: {e.Message}", LogLevel.Error);
                 fetchStatsButton.Label = fetchStatsButton.Label.Replace(fetchingString, failedString);
             }
         };
@@ -53,7 +56,7 @@ public class GoldberriesIntegrationModuleSettings : EverestModuleSettings {
         TextMenu.Button viewChartsButton = new TextMenu.Button(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_VIEW_CHARTS")) {
             OnPressed = () => {
                 menu.RemoveSelf();
-                GoldberriesGUI.Instance.Show();
+                GBStatsHUD.Instance.Show();
             }
         };
 

@@ -1,9 +1,9 @@
 using System;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration.Entities.GUI;
+namespace Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
 
-public class Tab : Entity {
+public abstract class Tab : Entity {
 
     public static GoldberriesIntegrationModuleSettings ModSettings => GoldberriesIntegrationModule.ModSettings;
 

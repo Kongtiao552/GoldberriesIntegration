@@ -42,8 +42,8 @@ public class GoldberriesIntegrationModule : EverestModule {
 
     public static void On_Load_Level(Level level, Player.IntroTypes playerIntro, bool isFromLoader) {
         if (isFromLoader) {
-            level.Add(GoldberriesGUI.Instance);
-            Utils.Log("GoldberriesGUI Added");
+            level.Add(GBStatsHUD.Instance);
+            Utils.Log("GBStatsHUD Added");
         }
     }
 
@@ -57,7 +57,7 @@ public class GoldberriesIntegrationModule : EverestModule {
 
     public static void UpdateHotkeyPresses() {
         if (ModSettings.ButtonViewCharts.Pressed) {
-            GoldberriesGUI.Instance.Show();
+            GBStatsHUD.Instance.Show();
         }
     }
 

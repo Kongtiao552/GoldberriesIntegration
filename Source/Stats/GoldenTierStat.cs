@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Celeste.Mod.GoldberriesIntegration.Misc;
 using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+using Newtonsoft.Json;
 
 namespace Celeste.Mod.GoldberriesIntegration.Stats;
 
@@ -10,15 +11,22 @@ public class GoldenTierStat : GBStat {
 
     public static GoldenTierStat Instance { get; } = new GoldenTierStat();
 
+    [JsonConverter(typeof(TimeSpanConverter))]
+    [JsonProperty("max_time_spent")]
     public TimeSpan MaxTimeSpent { get; set; } = TimeSpan.Zero;
+
+    [JsonConverter(typeof(TimeSpanConverter))]
+    [JsonProperty("total_time_spent")]
     public TimeSpan TotalTimeSpent { get; set; } = TimeSpan.Zero;
 
+    [JsonProperty("max_goldberries_points")]
     public double MaxGoldberriesPoints { get; set; } = 0d;
+
+    [JsonProperty("total_goldberries_points")]
     public double TotalGoldberriesPoints { get; set; } = 0d;
 
+    [JsonProperty("golden_tiers")]
     public List<GoldenTier> GoldenTiers { get; set; } = new List<GoldenTier>(capacity: GoldberriesStatsManager.TierCount);
-
-    public int TierAmountDone { get; set; } = 0;
 
     public override void Reset() {
         GoldenTiers.Clear();
@@ -62,7 +70,7 @@ public class GoldenTierStat : GBStat {
             }
 
             if (!submission.IsObsolete) {
-                double gp = GetGP(tier);
+                double gp = GoldberriesStatsManager.GetGP(tier);
                 submissionTier.GoldberriesPoints += gp;
                 TotalGoldberriesPoints += gp;
             }
@@ -77,9 +85,7 @@ public class GoldenTierStat : GBStat {
 
         MaxTimeSpent = GoldenTiers.Max(tier => tier.TimeSpent);
         MaxGoldberriesPoints = GoldenTiers.Max(tier => tier.GoldberriesPoints);
-
-        Initialized = true;
     }
 
-    public static double GetGP(int tier) => Math.Pow(1.43d, tier - 1);
+    
 }

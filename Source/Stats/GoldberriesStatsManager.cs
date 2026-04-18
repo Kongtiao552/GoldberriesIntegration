@@ -26,11 +26,13 @@ public static class GoldberriesStatsManager {
     public const string PLAYER_INFO_FILE = @".\gb_player_info.json";
     public const string SUBMISSIONS_FILE = @".\gb_submissions.json";
 
+    public static string GetCachedStatsFilePath(string statName) => $@".\gb_{statName}_stat.json";
+
     public static List<GBStat> Stats { get; set; } = new List<GBStat>() {
         GoldenTierStat.Instance
     };
 
-    public static void Initialize() {
+    public static void Initialize(bool useCache) {
         if (!StatsFetched) {
             Utils.Log("Stats not fetched", LogLevel.Error);
             return;
@@ -41,10 +43,23 @@ public static class GoldberriesStatsManager {
         PlayerNameColor = account.NameColorStart == null ? Color.Black : account.NameColorStart.ToColor();
 
         Utils.Log("Initializing Stats", LogLevel.Info);
-        Stats.ForEach(stat => stat.Initialize(Submissions));
 
-        foreach (GBStat stat in Stats) {
-            if (!stat.Initialized) return;
+        if (useCache) {
+            Stats.ForEach(stat => {
+                string filePath = GetCachedStatsFilePath(stat.GetType().Name);
+                if (File.Exists(filePath)) {
+                    stat.Load(File.ReadAllText(filePath));
+                } else {
+                    Utils.Log($"Cache file for {stat.GetType().Name} not found, initializing stat normally", LogLevel.Info);
+                    stat.Initialize(Submissions);
+                    File.WriteAllText(filePath, stat.Save());
+                }
+            });
+        } else {
+            Stats.ForEach(stat => {
+                stat.Initialize(Submissions);
+                File.WriteAllText(GetCachedStatsFilePath(stat.GetType().Name), stat.Save());
+            });
         }
 
         Initialized = true;
@@ -60,30 +75,25 @@ public static class GoldberriesStatsManager {
     public static async Task Fetch(int playerId) {
         Utils.Log("Fetching Stats From goldberries.net", LogLevel.Info);
 
-        try {
-            using HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync($"{PlayerInfo.URL}?id={playerId}");
-
-            if (response.StatusCode != HttpStatusCode.OK) {
-                Utils.Log("Failed to fetch stats", LogLevel.Error);
-                throw new HttpRequestException("Failed to fetch stats. Status Code: " + (int) response.StatusCode);
-            }
-
-            string json = await response.Content.ReadAsStringAsync();
-            PlayerInfo = JsonConvert.DeserializeObject<PlayerInfo>(json);
-
-            json = await client.GetStringAsync($"{Submission.URL}?player_id={playerId}&arbitrary=true&archived=true");
-            Submissions = JsonConvert.DeserializeObject<List<Submission>>(json);
-
-            if (Submissions.Count == 0) return;
-            
-            StatsFetched = true;
-            SaveStatsFile();
-            Initialize();
-        } catch (HttpRequestException e) {
-            Utils.Log($"Network error: {e.Message}", LogLevel.Error);
-            throw;
+        using HttpClient client = new HttpClient();
+        HttpResponseMessage response = await client.GetAsync($"{PlayerInfo.URL}?id={playerId}");
+        if (response.StatusCode != HttpStatusCode.OK) {
+            Utils.Log("Failed to fetch stats", LogLevel.Error);
+            throw new HttpRequestException("Failed to fetch stats. Status Code: " + (int) response.StatusCode);
         }
+
+        string json = await response.Content.ReadAsStringAsync();
+        PlayerInfo = JsonConvert.DeserializeObject<PlayerInfo>(json);
+
+        json = await client.GetStringAsync($"{Submission.URL}?player_id={playerId}&arbitrary=true&archived=true");
+        Submissions = JsonConvert.DeserializeObject<List<Submission>>(json);
+
+        if (Submissions.Count == 0) return;
+        
+        StatsFetched = true;
+
+        SaveStatsFile();
+        Initialize(useCache: false);
     }
 
     public static bool CheckStatsFile() {
@@ -113,7 +123,7 @@ public static class GoldberriesStatsManager {
             PlayerInfo = JsonConvert.DeserializeObject<PlayerInfo>(File.ReadAllText(PLAYER_INFO_FILE));
             Submissions = JsonConvert.DeserializeObject<List<Submission>>(File.ReadAllText(SUBMISSIONS_FILE));
             StatsFetched = true;
-            Initialize();
+            Initialize(useCache: true);
         }
     }
 
@@ -172,5 +182,7 @@ public static class GoldberriesStatsManager {
         intTier = result;
         return isTier;
     }
+
+    public static double GetGP(int tier) => Math.Pow(1.43d, tier - 1);
 
 }

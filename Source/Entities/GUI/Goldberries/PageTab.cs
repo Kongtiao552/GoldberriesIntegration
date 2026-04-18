@@ -2,7 +2,7 @@ using System;
 
 namespace Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
 
-public abstract class PageTab : StatTab {
+public abstract class PageTab : Tab {
 
     public PageTab(string title) : base(title) {}
 
