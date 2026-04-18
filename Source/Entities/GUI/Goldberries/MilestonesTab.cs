@@ -76,7 +76,16 @@ public class MilestonesTab : PageTab {
     private void DrawMilestone(Vector2 pointer, GoldenTier goldenTier) {   
         Vector2 offset = new Vector2(MilestoneWidth / 2, 40f);
         Color color = goldenTier.GetColor();
-        InGameWindow.DrawTextInCenter(goldenTier.GetTierString(), 0.8f, pointer + offset, color, true);
+
+        ActiveFont.DrawOutline(
+            goldenTier.GetTierString(), 
+            pointer + offset, 
+            Vector2.One / 2,
+            Vector2.One * 0.8f,
+            color,
+            1f,
+            Color.Black
+        );
         
         pointer += new Vector2(20f, GBStatsHUD.TabContentHeight / 2 - 40f);
         pointer.Y -= TableRowHeight * 8;

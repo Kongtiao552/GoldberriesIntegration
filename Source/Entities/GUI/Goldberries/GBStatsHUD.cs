@@ -56,7 +56,14 @@ public class GBStatsHUD : InGameWindow {
                 Draw.Rect(tabXPosition, TabYPosition, labelSize, TabHeight, Color.Black);
             }
 
-            DrawTextInCenter(TabList[i - 1].GetTitle(), textSize, new Vector2(tabXPosition - tabSize / 2, TabYPosition + TabHeight / 2), Color.Black, false);
+            Vector2 pointer = new Vector2(tabXPosition - tabSize / 2, TabYPosition + TabHeight / 2);
+            ActiveFont.Draw(
+                TabList[i - 1].GetTitle(), 
+                pointer,
+                Vector2.One / 2,
+                Vector2.One * textSize,
+                Color.Black
+            );
         }
 
         TabList[SelectedTab].Render();
@@ -65,10 +72,9 @@ public class GBStatsHUD : InGameWindow {
     public void InnerRender() {
         // Render player name
         string name = GoldberriesStatsManager.PlayerName;
-        Vector2 measure = ActiveFont.Measure(name) * NameSize;
+        Color color = GoldberriesStatsManager.PlayerNameColor;
         Vector2 pointer = new Vector2(Engine.Width / 2, WindowPositionY + TabYOffset / 2);
-        pointer -= measure / 2;
-        DrawText(GoldberriesStatsManager.PlayerName, NameSize, pointer, GoldberriesStatsManager.PlayerNameColor, false);
+        ActiveFont.Draw(name, pointer, Vector2.One / 2, Vector2.One * NameSize, color);
 
         RenderTabs();
     } 
@@ -77,9 +83,21 @@ public class GBStatsHUD : InGameWindow {
         base.Render();
 
         if (!GoldberriesStatsManager.StatsFetched) {
-            DrawTextInScreenCenter("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_NOT_FETCHED", 0.8f, Color.Black, false);
+            ActiveFont.Draw(
+                Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_NOT_FETCHED"),
+                new Vector2(Engine.Width / 2, Engine.Height / 2),
+                Vector2.One / 2,
+                Vector2.One * 0.8f,
+                Color.Black
+            );
         } else if (!GoldberriesStatsManager.Initialized) {
-            DrawTextInScreenCenter("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_NOT_INITIALIZED", 0.8f, Color.Black, false);
+                ActiveFont.Draw(
+                Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_NOT_INITIALIZED"),
+                new Vector2(Engine.Width / 2, Engine.Height / 2),
+                Vector2.One / 2,
+                Vector2.One * 0.8f,
+                Color.Black
+            );
         } else {
             InnerRender();
         }

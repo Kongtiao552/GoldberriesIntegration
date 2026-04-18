@@ -25,9 +25,6 @@ public static class ChartHelper {
         int barHeight = 30;
         int height = barHeight * GoldberriesStatsManager.TierCount;
         float barMaxWidth = InGameWindow.WindowWidth - 350f;
-        
-        totalString = TotalString + ": " + totalString;
-        ActiveFont.Draw(totalString, GBStatsHUD.TabPosition + new Vector2(InGameWindow.WindowWidth - 20f, InGameWindow.WindowHeight - 200f), Vector2.UnitX, Vector2.One * 0.6f, Color.Black);
 
         pointer.Y += height;
         Draw.Rect(pointer, 1f, -height, Color.Black);
@@ -40,7 +37,15 @@ public static class ChartHelper {
             string tierString = goldenTier.GetTierString();
             Color color = goldenTier.GetColor();
 
-            InGameWindow.DrawTextInCenter(tierString, textSize, pointer - new Vector2(60f, barHeight / 2), color, true);
+            ActiveFont.DrawOutline(
+                tierString, 
+                pointer - new Vector2(60f, barHeight / 2), 
+                Vector2.One / 2,
+                Vector2.One * textSize,
+                color,
+                1f,
+                Color.Black
+            );
 
             if (value != 0d) {
                 double proportion = value / max;
@@ -52,12 +57,20 @@ public static class ChartHelper {
                 Draw.Rect(pointer - new Vector2(0f, barHeight), barWidth + 1f, 1f, Color.Black);
 
                 statString += $" ({(value / total).ToString("P2").Replace(" ", "")})";
-                Vector2 measure = ActiveFont.Measure(statString) * textSize;
-                ActiveFont.DrawOutline(statString, pointer + new Vector2(barWidth + 10f, -barHeight / 2) - new Vector2(0f, measure.Y / 2), Vector2.Zero, Vector2.One * textSize, color, 1f, Color.Black);
+                ActiveFont.DrawOutline(statString, pointer + new Vector2(barWidth + 10f, -barHeight / 2), Vector2.UnitY / 2, Vector2.One * textSize, color, 1f, Color.Black);
             }
             
             pointer.Y -= barHeight;
         }
+
+        totalString = TotalString + ": " + totalString;
+        ActiveFont.Draw(
+            totalString,
+            InGameWindow.WindowPosition + new Vector2(InGameWindow.WindowWidth - 20f, InGameWindow.WindowHeight - 10f),
+            Vector2.One, 
+            Vector2.One * 0.6f, 
+            Color.Black
+        );
     }
 
 }

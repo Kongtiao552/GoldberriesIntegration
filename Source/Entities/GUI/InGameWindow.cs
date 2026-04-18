@@ -70,25 +70,5 @@ public abstract class InGameWindow : Entity {
         if (Visible) Hide();
         else Show();
     }
-
-    public static void DrawText(string text, float size, Vector2 position, Color color, bool outline) {
-        text = text.DialogCleanOrNull() ?? text;
-
-        if (outline) {
-            ActiveFont.DrawOutline(text, position, Vector2.Zero, Vector2.One * size, color, 1f, Color.Black);
-        } else {
-            ActiveFont.Draw(text, position, Vector2.Zero, Vector2.One * size, color);
-        }
-    }
-
-    public static void DrawTextInCenter(string text, float size, Vector2 position, Color color, bool outline) {
-        text = text.DialogCleanOrNull() ?? text;
-
-        position -= ActiveFont.Measure(text) / 2 * size;
-        DrawText(text, size, position, color, outline);
-    }
-
-    public static void DrawTextInScreenCenter(string text, float size, Color color, bool outline) {
-        DrawTextInCenter(text, size, Utils.ScreenCenter, color, outline);
-    }
+    
 }
