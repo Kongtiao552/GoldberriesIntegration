@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
+using Celeste.Mod.GoldberriesIntegration.Entities;
 using Celeste.Mod.GoldberriesIntegration.Misc;
 using Celeste.Mod.GoldberriesIntegration.Stats;
 
@@ -31,18 +31,18 @@ public class GoldberriesIntegrationModule : EverestModule {
 
         Everest.Events.Level.OnLoadLevel += On_Load_Level;
 
-        On.Celeste.Level.Update += Level_Update;
+       // On.Celeste.Level.Update += Level_Update;
     }
 
     public override void Unload() {
         Everest.Events.Level.OnLoadLevel -= On_Load_Level;
 
-        On.Celeste.Level.Update -= Level_Update;
+       // On.Celeste.Level.Update -= Level_Update;
     }
 
     public static void On_Load_Level(Level level, Player.IntroTypes playerIntro, bool isFromLoader) {
         if (isFromLoader) {
-            level.Add(GBStatsHUD.Instance);
+            level.Add(new GBStatsHUD());
             Utils.Log("GBStatsHUD Added");
         }
     }
@@ -56,9 +56,7 @@ public class GoldberriesIntegrationModule : EverestModule {
     }
 
     public static void UpdateHotkeyPresses() {
-        if (ModSettings.ButtonViewCharts.Pressed) {
-            GBStatsHUD.Instance.Show();
-        }
+
     }
 
 }

@@ -2,29 +2,27 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
+using Celeste.Mod.GoldberriesIntegration.Entities;
 using Celeste.Mod.GoldberriesIntegration.Misc;
 using Celeste.Mod.GoldberriesIntegration.Stats;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration.Entities.GUI;
+namespace Celeste.Mod.GoldberriesIntegration.Entities;
 
 public static class ChartHelper {
-
-    public static string TotalString = Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TOTAL_STRING");
 
     public delegate string LabelFormatter(GoldenTier tier);
     public delegate double ValueGetter(GoldenTier tier);
     
-    public static void GBGoldenTierBarChart(LabelFormatter labelFormatter, ValueGetter valueGetter, double max, double total, string totalString) {
+    public static void GBGoldenTierBarChart(LabelFormatter labelFormatter, ValueGetter valueGetter, double max, double total) {
         Vector2 pointer = GBStatsHUD.TabPosition + new Vector2(120f, 20f);
         GoldenTierStat stat = GoldenTierStat.Instance;
 
         float textSize = 0.4f;
         int barHeight = 30;
         int height = barHeight * GoldberriesStatsManager.TierCount;
-        float barMaxWidth = InGameWindow.WindowWidth - 350f;
+        float barMaxWidth = GBStatsHUD.HUDWidth - 350f;
 
         pointer.Y += height;
         Draw.Rect(pointer, 1f, -height, Color.Black);
@@ -59,18 +57,9 @@ public static class ChartHelper {
                 statString += $" ({(value / total).ToString("P2").Replace(" ", "")})";
                 ActiveFont.DrawOutline(statString, pointer + new Vector2(barWidth + 10f, -barHeight / 2), Vector2.UnitY / 2, Vector2.One * textSize, color, 1f, Color.Black);
             }
-            
+
             pointer.Y -= barHeight;
         }
-
-        totalString = TotalString + ": " + totalString;
-        ActiveFont.Draw(
-            totalString,
-            InGameWindow.WindowPosition + new Vector2(InGameWindow.WindowWidth - 20f, InGameWindow.WindowHeight - 10f),
-            Vector2.One, 
-            Vector2.One * 0.6f, 
-            Color.Black
-        );
     }
 
 }

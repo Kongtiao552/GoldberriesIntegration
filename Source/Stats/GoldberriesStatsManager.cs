@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Celeste.Mod.GoldberriesIntegration.Misc;
 using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
 using Microsoft.Xna.Framework;
+using Monocle;
 using Newtonsoft.Json;
 
 namespace Celeste.Mod.GoldberriesIntegration.Stats;
@@ -19,6 +21,8 @@ public static class GoldberriesStatsManager {
 
     public static bool StatsFetched { get; set; } = false;
 
+    public static bool PlayerHasSubmissions { get; set; } = false;
+
     public static PlayerInfo PlayerInfo { get; set; }
 
     public static List<Submission> Submissions { get; set; }
@@ -29,7 +33,8 @@ public static class GoldberriesStatsManager {
     public static string GetCachedStatsFilePath(string statName) => $@".\gb_{statName}_stat.json";
 
     public static List<GBStat> Stats { get; set; } = new List<GBStat>() {
-        GoldenTierStat.Instance
+        GoldenTierStat.Instance,
+        AnnualRecapStat.Instance
     };
 
     public static void Initialize(bool useCache) {
@@ -38,9 +43,17 @@ public static class GoldberriesStatsManager {
             return;
         }
 
+        if (Submissions.Count == 0) {
+            Utils.Log("This player has no submissions", LogLevel.Warn);
+            PlayerHasSubmissions = false;
+            return;
+        }
+
+        PlayerHasSubmissions = true;
+
         PlayerName = PlayerInfo.Name;
         PlayerAccount account = PlayerInfo.Account;
-        PlayerNameColor = account.NameColorStart == null ? Color.Black : account.NameColorStart.ToColor();
+        PlayerNameColor = account.NameColorStart == null ? Color.Black : Calc.HexToColor(account.NameColorStart);
 
         Utils.Log("Initializing Stats", LogLevel.Info);
 
@@ -131,30 +144,30 @@ public static class GoldberriesStatsManager {
     public static Color PlayerNameColor { get; set; }
 
     public static Dictionary<string, Color> TierColors { get; } = new Dictionary<string, Color>() {
-        {"Untiered", "#ffffff".ToColor()},
-        {"Undetermined", "#aaaaaa".ToColor()},
-        {"Tier 1", "#9696ff".ToColor()},
-        {"Tier 2", "#93aeff".ToColor()},
-        {"Tier 3", "#91c8ff".ToColor()},
-        {"Tier 4", "#8eecff".ToColor()},
-        {"Tier 5", "#8cffe2".ToColor()},
-        {"Tier 6", "#89ffb0".ToColor()},
-        {"Tier 7", "#9bff87".ToColor()},
-        {"Tier 8", "#b7ff84".ToColor()},
-        {"Tier 9", "#d5ff82".ToColor()},
-        {"Tier 10", "#f4ff7f".ToColor()},
-        {"Tier 11", "#fff47c".ToColor()},
-        {"Tier 12", "#ffdd7a".ToColor()},
-        {"Tier 13", "#ffc677".ToColor()},
-        {"Tier 14", "#ffae75".ToColor()},
-        {"Tier 15", "#ff9572".ToColor()},
-        {"Tier 16", "#ff7c70".ToColor()},
-        {"Tier 17", "#ff6d79".ToColor()},
-        {"Tier 18", "#ff6daa".ToColor()},
-        {"Tier 19", "#ff68d9".ToColor()},
-        {"Tier 20", "#f266ff".ToColor()},
-        {"Tier 21", "#d863ff".ToColor()},
-        {"Tier 22", "#bd60ff".ToColor()}
+        {"Untiered", Calc.HexToColor("#ffffff")},
+        {"Undetermined", Calc.HexToColor("#aaaaaa")},
+        {"Tier 1", Calc.HexToColor("#9696ff")},
+        {"Tier 2", Calc.HexToColor("#93aeff")},
+        {"Tier 3", Calc.HexToColor("#91c8ff")},
+        {"Tier 4", Calc.HexToColor("#8eecff")},
+        {"Tier 5", Calc.HexToColor("#8cffe2")},
+        {"Tier 6", Calc.HexToColor("#89ffb0")},
+        {"Tier 7", Calc.HexToColor("#9bff87")},
+        {"Tier 8", Calc.HexToColor("#b7ff84")},
+        {"Tier 9", Calc.HexToColor("#d5ff82")},
+        {"Tier 10", Calc.HexToColor("#f4ff7f")},
+        {"Tier 11", Calc.HexToColor("#fff47c")},
+        {"Tier 12", Calc.HexToColor("#ffdd7a")},
+        {"Tier 13", Calc.HexToColor("#ffc677")},
+        {"Tier 14", Calc.HexToColor("#ffae75")},
+        {"Tier 15", Calc.HexToColor("#ff9572")},
+        {"Tier 16", Calc.HexToColor("#ff7c70")},
+        {"Tier 17", Calc.HexToColor("#ff6d79")},
+        {"Tier 18", Calc.HexToColor("#ff6daa")},
+        {"Tier 19", Calc.HexToColor("#ff68d9")},
+        {"Tier 20", Calc.HexToColor("#f266ff")},
+        {"Tier 21", Calc.HexToColor("#d863ff")},
+        {"Tier 22", Calc.HexToColor("#bd60ff")}
     };  
 
     public static int TierCount = 22;
@@ -184,5 +197,7 @@ public static class GoldberriesStatsManager {
     }
 
     public static double GetGP(int tier) => Math.Pow(1.43d, tier - 1);
+
+    public static double GetGP(Submission submission) => TryGetIntTier(submission, out int intTier) ? GetGP(intTier) : 0d;
 
 }

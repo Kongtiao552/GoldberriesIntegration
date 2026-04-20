@@ -45,42 +45,28 @@ public class GoldenTierStat : GBStat {
             GoldenTiers.Add(new GoldenTier(i));
         }
 
-        foreach (Submission submission in submissions) {
-            if (!GoldberriesStatsManager.TryGetIntTier(submission, out int tier)) continue;
+        Dictionary<GoldenTier, List<Submission>> tierSubmissions = submissions
+            .Where(s => !GoldberriesStatsManager.IsUntieredOrUndetermined(s))
+            .GroupBy(s => GoldberriesStatsManager.TryGetIntTier(s, out int tier) ? GoldenTiers[tier - 1] : null)
+            .ToDictionary(group => group.Key, group => group.ToList());
 
-            GoldenTier submissionTier = GoldenTiers[tier - 1];
+        foreach (GoldenTier goldenTier in GoldenTiers) {
+            List<Submission> submissionsForTier = tierSubmissions.GetValueOrDefault(goldenTier);
 
-            if (submission.TimeTaken.HasValue) {
-                if (submissionTier.Fastest == null) {
-                    submissionTier.Fastest = submission;
-                } else if (submissionTier.Fastest.TimeTaken.Value > submission.TimeTaken.Value) {
-                    submissionTier.Fastest = submission;
-                }
+            if (submissionsForTier == null) continue;
 
-                if (submissionTier.Longest == null) {
-                    submissionTier.Longest = submission;
-                } else if (submissionTier.Longest.TimeTaken.Value < submission.TimeTaken.Value) {
-                    submissionTier.Longest = submission;
-                }
+            goldenTier.HasBeenDone = true;
+            goldenTier.FirstAchieved = submissionsForTier.OrderBy(s => s.DateAchieved).First();
 
-                if (!submission.IsObsolete) {
-                    submissionTier.TimeSpent += submission.TimeTaken.Value;
-                    TotalTimeSpent += submission.TimeTaken.Value;
-                }
-            }
+            List<Submission> submissionsByTime = submissionsForTier.Where(s => s.TimeTaken.HasValue).OrderBy(s => s.TimeTaken).ToList();
+            goldenTier.Fastest = submissionsByTime.FirstOrDefault();
+            goldenTier.Longest = submissionsByTime.LastOrDefault();
 
-            if (!submission.IsObsolete) {
-                double gp = GoldberriesStatsManager.GetGP(tier);
-                submissionTier.GoldberriesPoints += gp;
-                TotalGoldberriesPoints += gp;
-            }
+            goldenTier.TimeSpent = TimeSpan.FromSeconds(submissionsByTime.Where(s => !s.IsObsolete).Sum(s => s.TimeTaken.Value.TotalSeconds));
+            goldenTier.GoldberriesPoints = submissionsForTier.Where(s => !s.IsObsolete).Sum(s => GoldberriesStatsManager.GetGP(s));
 
-            if (!submissionTier.HasBeenDone) {
-                submissionTier.FirstAchieved = submission;
-                submissionTier.HasBeenDone = true;
-            } else if (submissionTier.FirstAchieved.DateAchieved > submission.DateAchieved) {
-                submissionTier.FirstAchieved = submission;
-            }
+            TotalTimeSpent += goldenTier.TimeSpent;
+            TotalGoldberriesPoints += goldenTier.GoldberriesPoints;
         }
 
         MaxTimeSpent = GoldenTiers.Max(tier => tier.TimeSpent);

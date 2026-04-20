@@ -5,28 +5,28 @@ using Celeste.Mod.GoldberriesIntegration.Stats;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
+namespace Celeste.Mod.GoldberriesIntegration.Entities;
 
 public class MilestonesTab : PageTab {
 
     public MilestonesTab(string title) : base(title) {
-        PageAmount = 3;
+        SetPageAmount((int) Math.Ceiling(GoldberriesStatsManager.TierCount / 8f));
     }
 
     private static GoldenTierStat GoldenTierStatInstance => GoldenTierStat.Instance;
 
-    private readonly float MilestoneWidth = InGameWindow.WindowWidth / 4;
+    private static readonly float MilestoneWidth = GBStatsHUD.HUDWidth / 4;
 
-    private readonly string FirstAchievedLabel = Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_MILESTONE_FTRST_ACHIEVED");
-    private readonly string FastestLabel = Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_MILESTONE_FASTEST");
-    private readonly string LongestLabel = Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_MILESTONE_LONGEST");
+    private static readonly string FirstAchievedLabel = Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_MILESTONE_FTRST_ACHIEVED");
+    private static readonly string FastestLabel = Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_MILESTONE_FASTEST");
+    private static readonly string LongestLabel = Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_MILESTONE_LONGEST");
 
-    private float TableLabelSize = 0.4f;
-    private float TableRowHeight = 30f;
+    private static readonly float TableLabelSize = 0.4f;
+    private static readonly float TableRowHeight = 30f;
 
-    private int SubmissionStringMaxLength = 30;
+    private static readonly int SubmissionStringMaxLength = 30;
 
-    private Vector2 DrawSubmission(Vector2 pointer, Submission submission) {
+    private static Vector2 DrawSubmission(Vector2 pointer, Submission submission) {
         if (submission == null) {
             ActiveFont.Draw("-", pointer, Vector2.Zero, Vector2.One * TableLabelSize, Color.Black);
             pointer.Y += TableRowHeight;
@@ -73,7 +73,7 @@ public class MilestonesTab : PageTab {
         return pointer;
     }
 
-    private void DrawMilestone(Vector2 pointer, GoldenTier goldenTier) {   
+    private static void DrawMilestone(Vector2 pointer, GoldenTier goldenTier) {   
         Vector2 offset = new Vector2(MilestoneWidth / 2, 40f);
         Color color = goldenTier.GetColor();
 
@@ -87,8 +87,8 @@ public class MilestonesTab : PageTab {
             Color.Black
         );
         
-        pointer += new Vector2(20f, GBStatsHUD.TabContentHeight / 2 - 40f);
-        pointer.Y -= TableRowHeight * 8;
+        pointer += new Vector2(10f, GBStatsHUD.TabHeight / 2);
+        pointer.Y -= TableRowHeight * 9;
 
         ActiveFont.Draw(FastestLabel, pointer, Vector2.Zero, Vector2.One * TableLabelSize, Color.Black);
         pointer.Y += TableRowHeight;
@@ -106,11 +106,11 @@ public class MilestonesTab : PageTab {
     public override void Render() {
         Vector2 pointer = GBStatsHUD.TabPosition;
 
-        Draw.Rect(new Vector2(InGameWindow.WindowPositionX, pointer.Y + GBStatsHUD.TabContentHeight / 2), InGameWindow.WindowWidth, 2f, Color.Black);
+        Draw.Rect(new Vector2(GBStatsHUD.HUDPositionX, pointer.Y + GBStatsHUD.TabHeight / 2), GBStatsHUD.HUDWidth, 2f, Color.Black);
 
         for (int i = 1; i < 4; i++) {
             pointer.X += MilestoneWidth;
-            Draw.Rect(pointer, 2f, GBStatsHUD.TabContentHeight, Color.Black);
+            Draw.Rect(pointer, 2f, GBStatsHUD.TabHeight, Color.Black);
         }
 
         pointer = GBStatsHUD.TabPosition;
@@ -124,7 +124,7 @@ public class MilestonesTab : PageTab {
         }
 
         pointer = GBStatsHUD.TabPosition;
-        pointer.Y += GBStatsHUD.TabContentHeight / 2;
+        pointer.Y += GBStatsHUD.TabHeight / 2;
 
         for (int i = LowestTier + 4; i < LowestTier + 8; i++) {
             if (i > GoldberriesStatsManager.TierCount) return;

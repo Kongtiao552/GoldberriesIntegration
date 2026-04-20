@@ -34,4 +34,10 @@ public class GoldenTier {
     public string GetTierString() => "Tier " + Tier;
 
     public Color GetColor() => GoldberriesStatsManager.TierColors[GetTierString()];
+
+    public override bool Equals(object obj) {
+        return obj != null && obj is GoldenTier other && Tier == other.Tier;
+    }
+
+    public override int GetHashCode() => Tier.GetHashCode();
 }

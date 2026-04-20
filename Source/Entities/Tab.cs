@@ -1,7 +1,7 @@
 using System;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration.Entities.GUI.Goldberries;
+namespace Celeste.Mod.GoldberriesIntegration.Entities;
 
 public abstract class Tab : Entity {
 
@@ -15,4 +15,5 @@ public abstract class Tab : Entity {
         Visible = false;
         Title = Dialog.Clean(title);
     }
+    
 }
