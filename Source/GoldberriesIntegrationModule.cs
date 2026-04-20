@@ -27,7 +27,11 @@ public class GoldberriesIntegrationModule : EverestModule {
     }
 
     public override void Load() {
-        GoldberriesStatsManager.LoadStatsFile();
+        GoldberriesStatsManager.CheckRootFolder();
+        
+        if (GoldberriesStatsManager.CheckStatsFile()) {
+            GoldberriesStatsManager.LoadStatsFile();
+        }
 
         Everest.Events.Level.OnLoadLevel += On_Load_Level;
 

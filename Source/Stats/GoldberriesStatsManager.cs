@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection.Metadata.Ecma335;
@@ -16,6 +17,7 @@ namespace Celeste.Mod.GoldberriesIntegration.Stats;
 public static class GoldberriesStatsManager {
 
     public static GoldberriesIntegrationModuleSettings ModSettings => GoldberriesIntegrationModule.ModSettings;
+    public static GoldberriesIntegrationModule Module => GoldberriesIntegrationModule.Instance;
 
     public static bool Initialized { get; set; } = false;
 
@@ -27,15 +29,32 @@ public static class GoldberriesStatsManager {
 
     public static List<Submission> Submissions { get; set; }
 
-    public const string PLAYER_INFO_FILE = @".\gb_player_info.json";
-    public const string SUBMISSIONS_FILE = @".\gb_submissions.json";
+    public static readonly string RootFolder = @".\GoldberriesIntegration\";
+ 
+    public static readonly string PlayerInfoFile = Path.Combine(RootFolder, "player_info.json");
+    public static readonly string SubmissionsFile = Path.Combine(RootFolder, "submissions.json");
 
-    public static string GetCachedStatsFilePath(string statName) => $@".\gb_{statName}_stat.json";
+    public static void CheckRootFolder() {
+        if (!Directory.Exists(RootFolder)) {
+            Directory.CreateDirectory(RootFolder);
+        }
+    }
+
+    public static string GetCachedStatsFilePath(string statName) => Path.Combine(RootFolder, $"cached_v{Module.Metadata.VersionString}_{statName}.json");
 
     public static List<GBStat> Stats { get; set; } = new List<GBStat>() {
         GoldenTierStat.Instance,
         AnnualRecapStat.Instance
     };
+
+    public static void RefreshCache() {
+        // Delete cache files that don't match the current version
+        foreach (string file in Directory.GetFiles(RootFolder, "cached_v*_*.json")) {
+            if (!Path.GetFileName(file).StartsWith($"cached_v{Module.Metadata.VersionString}_")) {
+                File.Delete(file);
+            }
+        }
+    }
 
     public static void Initialize(bool useCache) {
         if (!StatsFetched) {
@@ -58,8 +77,9 @@ public static class GoldberriesStatsManager {
         Utils.Log("Initializing Stats", LogLevel.Info);
 
         if (useCache) {
-            Stats.ForEach(stat => {
+            foreach (GBStat stat in Stats) {
                 string filePath = GetCachedStatsFilePath(stat.GetType().Name);
+
                 if (File.Exists(filePath)) {
                     stat.Load(File.ReadAllText(filePath));
                 } else {
@@ -67,12 +87,14 @@ public static class GoldberriesStatsManager {
                     stat.Initialize(Submissions);
                     File.WriteAllText(filePath, stat.Save());
                 }
-            });
+            }
+
+            RefreshCache();
         } else {
-            Stats.ForEach(stat => {
+            foreach (GBStat stat in Stats) {
                 stat.Initialize(Submissions);
                 File.WriteAllText(GetCachedStatsFilePath(stat.GetType().Name), stat.Save());
-            });
+            }
         }
 
         Initialized = true;
@@ -110,12 +132,12 @@ public static class GoldberriesStatsManager {
     }
 
     public static bool CheckStatsFile() {
-        return File.Exists(SUBMISSIONS_FILE) && File.Exists(PLAYER_INFO_FILE);
+        return File.Exists(SubmissionsFile) && File.Exists(PlayerInfoFile);
     }
 
     public static void SaveStatsFile(string playerInfo, string submissions) {
-        File.WriteAllText(PLAYER_INFO_FILE, playerInfo);
-        File.WriteAllText(SUBMISSIONS_FILE, submissions);
+        File.WriteAllText(PlayerInfoFile, playerInfo);
+        File.WriteAllText(SubmissionsFile, submissions);
     }
 
     public static void SaveStatsFile(PlayerInfo playerInfo, List<Submission> submissions) {
@@ -127,17 +149,16 @@ public static class GoldberriesStatsManager {
     }
 
     public static void ResetStatsFile() {
-        File.Delete(PLAYER_INFO_FILE);
-        File.Delete(SUBMISSIONS_FILE);
+        foreach (string file in Directory.GetFiles(RootFolder, "*.json")) {
+            File.Delete(file);
+        }
     }
 
     public static void LoadStatsFile() {
-        if (CheckStatsFile()) {
-            PlayerInfo = JsonConvert.DeserializeObject<PlayerInfo>(File.ReadAllText(PLAYER_INFO_FILE));
-            Submissions = JsonConvert.DeserializeObject<List<Submission>>(File.ReadAllText(SUBMISSIONS_FILE));
-            StatsFetched = true;
-            Initialize(useCache: true);
-        }
+        PlayerInfo = JsonConvert.DeserializeObject<PlayerInfo>(File.ReadAllText(PlayerInfoFile));
+        Submissions = JsonConvert.DeserializeObject<List<Submission>>(File.ReadAllText(SubmissionsFile));
+        StatsFetched = true;
+        Initialize(useCache: true);
     }
 
     public static string PlayerName { get; set; }
