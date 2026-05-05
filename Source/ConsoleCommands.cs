@@ -11,13 +11,13 @@ public static class ConsoleCommands {
     private static GoldberriesIntegrationModule Module => GoldberriesIntegrationModule.Instance;
     
     [Command("gb_player_id", "get or set the player id")]
-    public static void GbPlayerId(string stringpPlayerId = null) {
-        if (string.IsNullOrEmpty(stringpPlayerId)) {
+    public static void GbPlayerId(string stringPlayerId = null) {
+        if (string.IsNullOrEmpty(stringPlayerId)) {
             Engine.Commands.Log($"Player ID: {ModSettings.PlayerId}");
             return;
         }
 
-        if (!int.TryParse(stringpPlayerId, out int playerId) || playerId < 1) {
+        if (!int.TryParse(stringPlayerId, out int playerId) || playerId < 1) {
             Engine.Commands.Log("Please input a valid player id!");
             return;
         }
@@ -27,8 +27,6 @@ public static class ConsoleCommands {
         Engine.Commands.Log($"Player ID set to {playerId}");
     }
 
-    private static bool IsFetching { get; set; } = false;
-
     [Command("gb_fetch_stats", "fetch stats from goldberries.net")]
     public static async Task GbFetchStats() {
         if (ModSettings.PlayerId < 1) {
@@ -36,22 +34,20 @@ public static class ConsoleCommands {
             return;
         }
 
-        if (IsFetching) {
+        if (StatManager.IsFetching) {
             Engine.Commands.Log("Already fetching stats!");
             return;
         }
 
-        IsFetching = true;
-
         Engine.Commands.Log("Fetching stats...");
 
         try {
-            await GoldberriesStatsManager.Fetch(ModSettings.PlayerId);
+            await StatManager.Fetch(ModSettings.PlayerId);
             Engine.Commands.Log("Stats fetched successfully.");
         } catch (Exception e) {
-            Engine.Commands.Log($"Error fetching stats: {e.Message}");
+            Engine.Commands.Log($"Error fetching stats: {e}");
         } finally {
-            IsFetching = false;
+            StatManager.IsFetching = false;
         }
     }
 }

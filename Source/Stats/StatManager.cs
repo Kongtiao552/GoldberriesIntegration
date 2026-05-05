@@ -14,10 +14,12 @@ using Newtonsoft.Json;
 
 namespace Celeste.Mod.GoldberriesIntegration.Stats;
 
-public static class GoldberriesStatsManager {
+public static class StatManager {
 
     public static GoldberriesIntegrationModuleSettings ModSettings => GoldberriesIntegrationModule.ModSettings;
     public static GoldberriesIntegrationModule Module => GoldberriesIntegrationModule.Instance;
+
+    public static bool IsFetching { get; set; } = false;
 
     public static bool Initialized { get; set; } = false;
 
@@ -34,6 +36,8 @@ public static class GoldberriesStatsManager {
     public static readonly string PlayerInfoFile = Path.Combine(RootFolder, "player_info.json");
     public static readonly string SubmissionsFile = Path.Combine(RootFolder, "submissions.json");
 
+    public static event Action OnStatInitialized;
+
     public static void CheckRootFolder() {
         if (!Directory.Exists(RootFolder)) {
             Directory.CreateDirectory(RootFolder);
@@ -43,6 +47,7 @@ public static class GoldberriesStatsManager {
     public static string GetCachedStatsFilePath(string statName) => Path.Combine(RootFolder, $"cached_v{Module.Metadata.VersionString}_{statName}.json");
 
     public static List<GBStat> Stats { get; set; } = new List<GBStat>() {
+        MiscStat.Instance,
         GoldenTierStat.Instance,
         AnnualRecapStat.Instance
     };
@@ -69,51 +74,56 @@ public static class GoldberriesStatsManager {
         }
 
         PlayerHasSubmissions = true;
-
         PlayerName = PlayerInfo.Name;
         PlayerAccount account = PlayerInfo.Account;
         PlayerNameColor = account.NameColorStart == null ? Color.Black : Calc.HexToColor(account.NameColorStart);
 
-        Utils.Log("Initializing Stats", LogLevel.Info);
-
         if (useCache) {
+            Utils.Log("Loading Stats");
+
             foreach (GBStat stat in Stats) {
                 string filePath = GetCachedStatsFilePath(stat.GetType().Name);
 
                 if (File.Exists(filePath)) {
                     stat.Load(File.ReadAllText(filePath));
                 } else {
-                    Utils.Log($"Cache file for {stat.GetType().Name} not found, initializing stat normally", LogLevel.Info);
-                    stat.Initialize(Submissions);
+                    Utils.Log($"Cache file for {stat.GetType().Name} not found, calculating stat normally");
+                    stat.Calculate(Submissions);
                     File.WriteAllText(filePath, stat.Save());
                 }
             }
 
             RefreshCache();
         } else {
+            Utils.Log("Calculating Stats");
+
             foreach (GBStat stat in Stats) {
-                stat.Initialize(Submissions);
+                stat.Calculate(Submissions);
                 File.WriteAllText(GetCachedStatsFilePath(stat.GetType().Name), stat.Save());
             }
         }
 
         Initialized = true;
+        OnStatInitialized?.Invoke();
     }
 
     public static void Reset() {
-        Stats.ForEach(stat => stat.Reset());
         StatsFetched = false;
         Initialized = false;
+        Stats.ForEach(stat => stat.Reset());
         ResetStatsFile();
     }
 
     public static async Task Fetch(int playerId) {
-        Utils.Log("Fetching Stats From goldberries.net", LogLevel.Info);
+        IsFetching = true;
+        Utils.Log("Fetching Stats From goldberries.net");
+        CheckRootFolder();
 
         using HttpClient client = new HttpClient();
         HttpResponseMessage response = await client.GetAsync($"{PlayerInfo.URL}?id={playerId}");
         if (response.StatusCode != HttpStatusCode.OK) {
             Utils.Log("Failed to fetch stats", LogLevel.Error);
+            IsFetching = false;
             throw new HttpRequestException("Failed to fetch stats. Status Code: " + (int) response.StatusCode);
         }
 
@@ -121,14 +131,12 @@ public static class GoldberriesStatsManager {
         PlayerInfo = JsonConvert.DeserializeObject<PlayerInfo>(json);
 
         json = await client.GetStringAsync($"{Submission.URL}?player_id={playerId}&arbitrary=true&archived=true");
-        Submissions = JsonConvert.DeserializeObject<List<Submission>>(json);
-
-        if (Submissions.Count == 0) return;
+        Submissions = JsonConvert.DeserializeObject<List<Submission>>(json).Where(s => !s.Challenge.Difficulty.IsUntieredOrUndetermined && !s.IsObsolete).ToList();
         
         StatsFetched = true;
-
         SaveStatsFile();
         Initialize(useCache: false);
+        IsFetching = false;
     }
 
     public static bool CheckStatsFile() {
@@ -158,7 +166,7 @@ public static class GoldberriesStatsManager {
         PlayerInfo = JsonConvert.DeserializeObject<PlayerInfo>(File.ReadAllText(PlayerInfoFile));
         Submissions = JsonConvert.DeserializeObject<List<Submission>>(File.ReadAllText(SubmissionsFile));
         StatsFetched = true;
-        Initialize(useCache: true);
+        Initialize(useCache: false);
     }
 
     public static string PlayerName { get; set; }
@@ -192,33 +200,5 @@ public static class GoldberriesStatsManager {
     };  
 
     public static int TierCount = 22;
-
-    public static bool IsUntieredOrUndetermined(string tier) => tier == "Untiered" || tier == "Undetermined";
-
-    public static bool IsUntieredOrUndetermined(Submission submission) => IsUntieredOrUndetermined(submission.Challenge.Difficulty.Name);
-
-    public static bool TryGetIntTier(string tier, out int intTier) {
-        intTier = 0;
-
-        if (tier == null) return false;
-        if (IsUntieredOrUndetermined(tier)) return false;
-
-        if (int.TryParse(tier.Substring(5), out int result)) {
-            intTier = result;
-            return true;
-        }
-
-        return false;
-    }
-
-    public static bool TryGetIntTier(Submission submission, out int intTier) {
-        bool isTier = TryGetIntTier(submission.Challenge?.Difficulty?.Name, out int result);
-        intTier = result;
-        return isTier;
-    }
-
-    public static double GetGP(int tier) => Math.Pow(1.43d, tier - 1);
-
-    public static double GetGP(Submission submission) => TryGetIntTier(submission, out int intTier) ? GetGP(intTier) : 0d;
 
 }

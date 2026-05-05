@@ -9,33 +9,29 @@ namespace Celeste.Mod.GoldberriesIntegration.Stats;
 
 public abstract class GBStat {
 
-    public void Initialize(List<Submission> submissions) {
+    public void Calculate(List<Submission> submissions) {
         Reset();
-        Utils.Log($"Initializing {GetType().Name}", LogLevel.Info);
-        InitializeStat(submissions);
-        Utils.Log($"{GetType().Name} Initialized", LogLevel.Info);
-        Initialized = true;
+        Utils.Log($"Initializing {GetType().Name}");
+        CalculateStat(submissions);
+        Utils.Log($"{GetType().Name} Initialized");
     }
 
     public void Load(string json) {
         Reset();
-        Utils.Log($"Loading {GetType().Name} from JSON", LogLevel.Info);
+        Utils.Log($"Loading {GetType().Name} from JSON");
         JsonConvert.PopulateObject(json, this);
-        Utils.Log($"{GetType().Name} Loaded", LogLevel.Info);
+        Utils.Log($"{GetType().Name} Loaded");
     }
 
     public string Save() {
-        Utils.Log($"Saving {GetType().Name} to JSON", LogLevel.Info);
+        Utils.Log($"Saving {GetType().Name} to JSON");
         string json = JsonConvert.SerializeObject(this, Formatting.Indented);
-        Utils.Log($"{GetType().Name} Saved", LogLevel.Info);
+        Utils.Log($"{GetType().Name} Saved");
         return json;
     }
 
-    public abstract void InitializeStat(List<Submission> submissions);
+    public abstract void CalculateStat(List<Submission> submissions);
 
     public abstract void Reset();
-
-    [JsonIgnore]
-    public bool Initialized { get; set; } = false;
 
 }

@@ -25,14 +25,14 @@ public class GoldberriesIntegrationModuleSettings : EverestModuleSettings {
     public void CreateStatsOptionsEntry(TextMenu menu, bool inGame) {
         TextMenuExt.SubMenu subMenu = new TextMenuExt.SubMenu(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS"), false);
 
-        DoubleConfirmationButton resetStatsButton = new DoubleConfirmationButton(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_RESET_BUTTON"), Color.Red) {
-            OnDoubleConfirmation = GoldberriesStatsManager.Reset,
-            Disabled = !GoldberriesStatsManager.StatsFetched
+        DoubleConfirmButton resetStatsButton = new DoubleConfirmButton(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_RESET_BUTTON"), Color.Red) {
+            OnDoubleConfirm = StatManager.Reset,
+            Disabled = !StatManager.StatsFetched || StatManager.IsFetching
         };
 
-        DoubleConfirmationButton fetchStatsButton = new DoubleConfirmationButton(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_FETCH_BUTTON"), Color.Yellow);
+        DoubleConfirmButton fetchStatsButton = new DoubleConfirmButton(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_FETCH_BUTTON"), Color.Yellow);
 
-        fetchStatsButton.OnDoubleConfirmation = async () => {
+        fetchStatsButton.OnDoubleConfirm = async () => {
             string fetchingString = " (Fetching...)";
             string failedString = " (Failed to fetch stats)";
 
@@ -41,40 +41,45 @@ public class GoldberriesIntegrationModuleSettings : EverestModuleSettings {
             resetStatsButton.Disabled = true;
 
             try {
-                await GoldberriesStatsManager.Fetch(PlayerId);
+                await StatManager.Fetch(PlayerId);
 
                 fetchStatsButton.Disabled = false;
                 fetchStatsButton.Label = fetchStatsButton.Label.Replace(fetchingString, "");
                 resetStatsButton.Disabled = false;
             } catch (Exception e) {
-                Utils.Log($"Error fetching stats: {e.Message}", LogLevel.Error);
+                Utils.Log($"Error fetching stats: {e}", LogLevel.Error);
                 fetchStatsButton.Label = fetchStatsButton.Label.Replace(fetchingString, failedString);
             }
         };
 
-        fetchStatsButton.Disabled = PlayerId < 1;
+        fetchStatsButton.Disabled = PlayerId < 1 || StatManager.IsFetching;
 
-        TextMenu.Button viewChartsButton = new TextMenu.Button(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_VIEW_CHARTS")) {
+        TextMenu.Button viewGraphsButton = new TextMenu.Button(Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_VIEW_GRAPHS")) {
             Disabled = !inGame,
             OnPressed = () => {
-                menu.RemoveSelf();   
-
                 if (Engine.Scene is Level level) {
-                    level.Tracker.GetEntity<GBStatsHUD>()?.Show();
+                    GraphHud hud = level.Tracker.GetEntity<GraphHud>();
+                    
+                    if (hud == null) return;
+
+                    menu.RemoveSelf();   
+                    hud.Open();
                 }           
             }
         };
 
         subMenu.Add(fetchStatsButton);
         subMenu.Add(resetStatsButton);
-        subMenu.Add(viewChartsButton);
+        subMenu.Add(viewGraphsButton);
+
+        viewGraphsButton.AddDescription(subMenu, menu, Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_VIEW_GRAPHS_DESCRIPTION"));
 
         menu.Add(subMenu);
     }
 
-    [SettingSubHeader("MODOPTION_GOLDBERRIES_INTEGRATION_STATS")]
-    [SettingName("MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_VIEW_CHARTS")]
-    public ButtonBinding ButtonViewCharts { get; set; }
+    [SettingSubHeader("MODOPTION_GOLDBERRIES_INTEGRATION_GRAPHS")]
+    [SettingName("MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_VIEW_GRAPHS")]
+    public ButtonBinding ButtonViewGraphs { get; set; }
 
     [SettingName("MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_TOGGLE_PAGE_MODIFIER")]
     public ButtonBinding ButtonTogglePageModifier { get; set; }

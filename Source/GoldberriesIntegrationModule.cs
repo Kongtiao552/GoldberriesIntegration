@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 using Celeste.Mod.GoldberriesIntegration.Entities;
 using Celeste.Mod.GoldberriesIntegration.Misc;
 using Celeste.Mod.GoldberriesIntegration.Stats;
@@ -17,50 +17,45 @@ public class GoldberriesIntegrationModule : EverestModule {
 
     public GoldberriesIntegrationModule() {
         Instance = this;
-#if DEBUG
-        // debug builds use verbose logging
-        Logger.SetLogLevel(nameof(GoldberriesIntegrationModule), LogLevel.Verbose);
-#else
-        // release builds use info logging to reduce spam in log files
+
         Logger.SetLogLevel(nameof(GoldberriesIntegrationModule), LogLevel.Info);
-#endif
     }
 
     public override void Load() {
-        GoldberriesStatsManager.CheckRootFolder();
-        
-        if (GoldberriesStatsManager.CheckStatsFile()) {
-            GoldberriesStatsManager.LoadStatsFile();
-        }
-
         Everest.Events.Level.OnLoadLevel += On_Load_Level;
-
-       // On.Celeste.Level.Update += Level_Update;
     }
 
     public override void Unload() {
         Everest.Events.Level.OnLoadLevel -= On_Load_Level;
-
-       // On.Celeste.Level.Update -= Level_Update;
     }
 
-    public static void On_Load_Level(Level level, Player.IntroTypes playerIntro, bool isFromLoader) {
+    public override void Initialize() {
+        InitializeHotkeys();
+
+        try {
+            StatManager.CheckRootFolder();
+    
+            if (StatManager.CheckStatsFile()) {
+                StatManager.LoadStatsFile();
+            }
+        } catch (Exception e) {
+            Utils.Log($"Error loading stats: {e}", LogLevel.Error);
+        }
+    }
+
+    private void InitializeHotkeys() {
+        // Set default binds
+        if (!ModSettings.ButtonTogglePageModifier.Binding.HasInput) {
+            ModSettings.ButtonTogglePageModifier.Binding.Add(Input.Grab.Binding.Keyboard[0]);
+            SaveSettings();
+        }
+    }
+
+    private static void On_Load_Level(Level level, Player.IntroTypes playerIntro, bool isFromLoader) {
         if (isFromLoader) {
-            level.Add(new GBStatsHUD());
-            Utils.Log("GBStatsHUD Added");
+            level.Add(new GraphHud());
+            Utils.Log("GraphHud Added");
         }
-    }
-
-    public static void Level_Update(On.Celeste.Level.orig_Update orig, Level self) {
-        orig(self);
-
-        if (!self.Paused) {
-            UpdateHotkeyPresses();
-        }
-    }
-
-    public static void UpdateHotkeyPresses() {
-
     }
 
 }

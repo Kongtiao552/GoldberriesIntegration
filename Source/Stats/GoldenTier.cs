@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
@@ -17,13 +18,18 @@ public class GoldenTier {
     [JsonProperty("goldberries_points")]
     public double GoldberriesPoints { get; set; } = 0d;
 
-    public GoldenTier(int tier) => Tier = tier;
+    public GoldenTier(int tier) {
+        Tier = tier;
+        TierString = "Tier " + Tier;
+
+        Color = StatManager.TierColors[TierString];
+    }
 
     [JsonProperty("has_been_done")]
     public bool HasBeenDone { get; set; } = false;
 
-    [JsonProperty("first_achieved")]
-    public Submission FirstAchieved  { get; set; }
+    [JsonProperty("first_completed")]
+    public Submission FirstCompleted  { get; set; }
 
     [JsonProperty("fastest")]
     public Submission Fastest  { get; set; }
@@ -31,13 +37,15 @@ public class GoldenTier {
     [JsonProperty("longest")]
     public Submission Longest  { get; set; }
 
-    public string GetTierString() => "Tier " + Tier;
+    public string TierString { get; private set; }
 
-    public Color GetColor() => GoldberriesStatsManager.TierColors[GetTierString()];
+    public Color Color { get; private set; }
 
     public override bool Equals(object obj) {
         return obj != null && obj is GoldenTier other && Tier == other.Tier;
     }
 
-    public override int GetHashCode() => Tier.GetHashCode();
+    public override int GetHashCode() {
+        return Tier.GetHashCode();
+    }
 }

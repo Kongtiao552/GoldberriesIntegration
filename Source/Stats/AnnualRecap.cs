@@ -22,9 +22,19 @@ public class AnnualRecap {
     public double GoldberriesPoints { get; set; } = 0d;
     
     [JsonProperty("hardest_submissions")]
-    public List<Submission> HardestSubmissions { get; set; } = new List<Submission>();
+    public List<Submission> HardestSubmissions { get; set; }
 
     [JsonProperty("longest_submissions")]
-    public List<Submission> LongestSubmissions { get; set; } = new List<Submission>();
+    public List<Submission> LongestSubmissions { get; set; }
+
+    [JsonProperty("monthly_recaps")]
+    public List<MonthlyRecap> MonthlyRecaps { get; set; }
+
+    [JsonConverter(typeof(TimeSpanConverter))]
+    [JsonProperty("monthly_recap_max_time_spent")]
+    public TimeSpan MonthlyRecapMaxTimeSpent { get; set; } = TimeSpan.Zero;
+
+    [JsonProperty("monthly_recap_max_gp")]
+    public double MonthlyRecapMaxGP { get; set; } = 0d;
 
 }

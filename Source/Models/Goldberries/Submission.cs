@@ -1,6 +1,6 @@
 using System;
-using Celeste.Mod.GoldberriesIntegration.Misc;
-using Celeste.Mod.GoldberriesIntegration.Stats;
+using System.Runtime.Serialization;
+using MonoMod.Core.Utils;
 using Newtonsoft.Json;
 
 namespace Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
@@ -34,6 +34,30 @@ public class Submission {
     [JsonProperty("is_obsolete")]
     public bool IsObsolete { get; set; }
 
+    [JsonProperty("id")]
+    public int Id { get; set; }
+
+    public override bool Equals(object obj) {
+        return obj != null && obj is Submission other && other.Id == Id;
+    }
+
+    public override int GetHashCode() {
+        return Id.GetHashCode();
+    }
+
+    private string _FormattedName { get; set; }
+
+    [JsonIgnore]
+    public string FormattedName {
+        get {
+            if (_FormattedName == null) {
+                _FormattedName = ToString();
+            }
+            
+            return _FormattedName;
+        }
+    }
+
     public override string ToString() {
         string result = Challenge.Map?.Name;
 
@@ -50,29 +74,6 @@ public class Submission {
         }
 
         return result;
-    }
-
-    public bool IsHarderThan(Submission other) {
-        if (other == null) {
-            return true;
-        }
-
-        // If this submission is untiered or undetermined, it's not harder than any other submission
-        if (GoldberriesStatsManager.IsUntieredOrUndetermined(this)) {
-            return false;
-        }
-
-        // If the other submission is untiered or undetermined and this submission is not, this submission is harder than it
-        if (GoldberriesStatsManager.IsUntieredOrUndetermined(other)) {
-            return true;
-        }
-
-        if (!GoldberriesStatsManager.TryGetIntTier(this, out int thisTier) || !GoldberriesStatsManager.TryGetIntTier(other, out int otherTier)) {
-            Utils.Log("Cannot compare these two submissions because at least one of them has an invalid tier.", LogLevel.Warn);
-            return false;
-        }
-
-        return thisTier > otherTier;
     }
     
 }
