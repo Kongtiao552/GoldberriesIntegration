@@ -36,7 +36,7 @@ public class MiscStat : GBStat {
         Verifiers?.Clear();
     }
 
-    public override void CalculateStat(List<Submission> submissions) {
+    public override void InitializeStat(List<Submission> submissions) {
         List<Submission> timedSubmissions = submissions.Where(s => s.TimeTaken.HasValue).ToList();
 
         SubmissionsByTime = timedSubmissions.OrderByDescending(s => s.TimeTaken.Value).ToList();

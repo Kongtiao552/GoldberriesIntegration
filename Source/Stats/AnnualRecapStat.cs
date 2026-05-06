@@ -18,7 +18,7 @@ public class AnnualRecapStat : GBStat {
         AnnualRecaps?.Clear();
     }
 
-    public override void CalculateStat(List<Submission> submissions) {
+    public override void InitializeStat(List<Submission> submissions) {
         AnnualRecaps = submissions
             .GroupBy(s => s.DateAchieved.Year)
             .Select(g => {

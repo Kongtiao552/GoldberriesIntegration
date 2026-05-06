@@ -12,14 +12,14 @@ public class GoldenTierStat : GBStat {
     public static GoldenTierStat Instance { get; } = new GoldenTierStat();
 
     [JsonProperty("golden_tiers")]
-    public List<GoldenTier> GoldenTiers { get; set; } = new List<GoldenTier>(capacity: StatManager.TierCount);
+    public List<GoldenTier> GoldenTiers { get; set; } = new List<GoldenTier>(capacity: StatManager.TierAmount);
 
     public override void Reset() {
         GoldenTiers?.Clear();
     }
 
-    public override void CalculateStat(List<Submission> submissions) {
-        for (int i = 1; i <= StatManager.TierCount; i++) {
+    public override void InitializeStat(List<Submission> submissions) {
+        for (int i = 1; i <= StatManager.TierAmount; i++) {
             GoldenTiers.Add(new GoldenTier(i));
         }
 

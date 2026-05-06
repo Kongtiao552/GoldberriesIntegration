@@ -13,7 +13,7 @@ namespace Celeste.Mod.GoldberriesIntegration.Entities;
 public class MilestonesTab : Tab {
 
     public MilestonesTab(string title) : base(title) {
-        PageAmount = (int) Math.Ceiling(StatManager.TierCount / 8f);
+        PageAmount = (int) Math.Ceiling(StatManager.TierAmount / 8f);
     }
 
     public override string GetTitle() {
@@ -137,7 +137,7 @@ public class MilestonesTab : Tab {
 
     public override void Update() {
         Milestones = new List<Milestone>();
-        for (int i = (SelectedPage - 1) * 8; i < SelectedPage * 8 && i < StatManager.TierCount; i++) {
+        for (int i = (SelectedPage - 1) * 8; i < SelectedPage * 8 && i < StatManager.TierAmount; i++) {
             Milestones.Add(new Milestone(GoldenTierStatInstance.GoldenTiers[i]));
         }
     }

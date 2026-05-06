@@ -44,7 +44,7 @@ public class GoldberriesPointTab : Tab {
             TextSize = 0.4f
         };
         
-        for (int i = StatManager.TierCount - 1; i >= 0; i--) {
+        for (int i = StatManager.TierAmount - 1; i >= 0; i--) {
             GoldenTier goldenTier = GoldenTierStatInstance.GoldenTiers[i];
             BarChart.Add(
                 goldenTier.GoldberriesPoints, 

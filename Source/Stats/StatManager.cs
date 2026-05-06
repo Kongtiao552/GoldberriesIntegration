@@ -43,24 +43,13 @@ public static class StatManager {
         }
     }
 
-    public static string GetCachedStatsFilePath(string statName) => Path.Combine(RootFolder, $"cached_v{Module.Metadata.VersionString}_{statName}.json");
-
     public static List<GBStat> Stats { get; set; } = new List<GBStat>() {
         MiscStat.Instance,
         GoldenTierStat.Instance,
         AnnualRecapStat.Instance
     };
 
-    public static void RefreshCache() {
-        // Delete cache files that don't match the current version
-        foreach (string file in Directory.GetFiles(RootFolder, "cached_v*_*.json")) {
-            if (!Path.GetFileName(file).StartsWith($"cached_v{Module.Metadata.VersionString}_")) {
-                File.Delete(file);
-            }
-        }
-    }
-
-    public static void Initialize(bool useCache) {
+    public static void Initialize() {
         if (!StatsFetched) {
             Utils.Log("Stats not fetched", LogLevel.Error);
             return;
@@ -77,29 +66,10 @@ public static class StatManager {
         PlayerAccount account = PlayerInfo.Account;
         PlayerNameColor = account.NameColorStart == null ? Color.Black : Calc.HexToColor(account.NameColorStart);
 
-        if (useCache) {
-            Utils.Log("Loading Stats");
+        Utils.Log("Initializing Stats...");
 
-            foreach (GBStat stat in Stats) {
-                string filePath = GetCachedStatsFilePath(stat.GetType().Name);
-
-                if (File.Exists(filePath)) {
-                    stat.Load(File.ReadAllText(filePath));
-                } else {
-                    Utils.Log($"Cache file for {stat.GetType().Name} not found, calculating stat normally");
-                    stat.Calculate(Submissions);
-                    File.WriteAllText(filePath, stat.Save());
-                }
-            }
-
-            RefreshCache();
-        } else {
-            Utils.Log("Calculating Stats");
-
-            foreach (GBStat stat in Stats) {
-                stat.Calculate(Submissions);
-                File.WriteAllText(GetCachedStatsFilePath(stat.GetType().Name), stat.Save());
-            }
+        foreach (GBStat stat in Stats) {
+            stat.InitializeStat(Submissions);
         }
 
         Initialized = true;
@@ -133,7 +103,7 @@ public static class StatManager {
         
         StatsFetched = true;
         SaveStatsFile();
-        Initialize(useCache: false);
+        Initialize();
     }
 
     public static bool CheckStatsFile() {
@@ -163,12 +133,12 @@ public static class StatManager {
         PlayerInfo = JsonConvert.DeserializeObject<PlayerInfo>(File.ReadAllText(PlayerInfoFile));
         Submissions = JsonConvert.DeserializeObject<List<Submission>>(File.ReadAllText(SubmissionsFile));
         StatsFetched = true;
-        Initialize(useCache: false);
+        Initialize();
     }
 
     public static string PlayerName { get; set; }
     public static Color PlayerNameColor { get; set; }
 
-    public static int TierCount = 22;
+    public const int TierAmount = 22;
 
 }
