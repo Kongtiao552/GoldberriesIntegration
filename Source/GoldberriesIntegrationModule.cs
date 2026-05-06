@@ -33,14 +33,16 @@ public class GoldberriesIntegrationModule : EverestModule {
     public override void Initialize() {
         InitializeHotkeys();
 
-        try {
-            StatManager.CheckRootFolder();
-    
-            if (StatManager.CheckStatsFile()) {
-                StatManager.LoadStatsFile();
+        if (ModSettings.StatsEnabled) {
+            try {
+                StatManager.CheckRootFolder();
+
+                if (StatManager.CheckStatsFile()) {
+                    StatManager.LoadStatsFile();
+                }
+            } catch (Exception e) {
+                Utils.Log($"Error loading stats: {e}", LogLevel.Error);
             }
-        } catch (Exception e) {
-            Utils.Log($"Error loading stats: {e}", LogLevel.Error);
         }
     }
 
@@ -53,7 +55,7 @@ public class GoldberriesIntegrationModule : EverestModule {
     }
 
     private static void On_Load_Level(Level level, Player.IntroTypes playerIntro, bool isFromLoader) {
-        if (isFromLoader) {
+        if (isFromLoader && ModSettings.StatsEnabled) {
             level.Add(new GraphHud());
             Utils.Log("GraphHud Added");
         }

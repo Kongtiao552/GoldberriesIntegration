@@ -25,23 +25,30 @@ public class AnnualRecapStat : GBStat {
                 List<Submission> submissionList = g.ToList();
                 List<Submission> timedSubmissions = submissionList.Where(s => s.TimeTaken.HasValue).ToList();
 
-                List<MonthlyRecap> monthlyRecaps = submissionList
+                Dictionary<int, List<Submission>> rawRecaps = submissionList
                     .GroupBy(s => s.DateAchieved.Month)
-                    .Select(g1 => {
-                        return new MonthlyRecap() {
-                            Month = g1.Key,
+                    .ToDictionary(g => g.Key, g => g.ToList());
+                
+                List<MonthlyRecap> monthlyRecaps = Enumerable.Range(1, 12)
+                    .Select(m => {
+                        if (rawRecaps.TryGetValue(m, out List<Submission> monthlySubmissions)) {
+                            return new MonthlyRecap() {
+                                Month = m,
 
-                            TimeSpent = TimeSpan.FromSeconds(
-                                g1.Where(
-                                    s => s.TimeTaken.HasValue
-                                ).Sum(
-                                    s => s.TimeTaken.Value.TotalSeconds
-                                )
-                            ),
+                                TimeSpent = TimeSpan.FromSeconds(
+                                    monthlySubmissions.Where(
+                                        s => s.TimeTaken.HasValue
+                                    ).Sum(
+                                        s => s.TimeTaken.Value.TotalSeconds
+                                    )
+                                ),
 
-                            GoldberriesPoints = g1.Sum(s => s.Challenge.Difficulty.GP)
-                        };
-                    }).OrderBy(mr => mr.Month).ToList();
+                                GoldberriesPoints = monthlySubmissions.Sum(s => s.Challenge.Difficulty.GP)
+                            };
+                        }
+                        
+                        return new MonthlyRecap() {Month = m};
+                    }).ToList();
 
                 return new AnnualRecap() {
                     Year = g.Key,

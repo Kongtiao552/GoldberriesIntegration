@@ -57,79 +57,46 @@ public class AnnualRecapTab : Tab {
         HardestTable.Insert(2, 0, 120f, cellHeight, "", cellTextSize, color: GraphHud.HighlightTabColor);
         HardestTable.Insert(3, 0, 120f, cellHeight, Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_DATE"), cellTextSize, color: GraphHud.HighlightTabColor);
 
-        for (int i = 1; i <= 5; i++) {
-            LongestTable.Insert(0, i, 60f, cellHeight, $"#{i}", cellTextSize);
-            LongestTable.Insert(1, i, 300f, cellHeight, "-", cellTextSize);
-            LongestTable.Insert(2, i, 120f, cellHeight, "-", cellTextSize);
-            LongestTable.Insert(3, i, 120f, cellHeight, "-", cellTextSize);
-
-            HardestTable.Insert(0, i, 60f, cellHeight, $"#{i}", cellTextSize);
-            HardestTable.Insert(1, i, 300f, cellHeight, "-", cellTextSize);
-            HardestTable.Insert(2, i, 120f, cellHeight, "-", cellTextSize);
-            HardestTable.Insert(3, i, 120f, cellHeight, "-", cellTextSize);
-        }
-
-        cellHeight = 40f;
-        cellTextSize = 0.4f;
-        
-        MiscTable.Insert(0, 0, 250f, cellHeight * 2, "", 1f, outline: true, color: GraphHud.HighlightTabColor);
-
-        MiscTable.Insert(1, 0, 250f, cellHeight, Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TOTAL_GP"), cellTextSize, color: GraphHud.HighlightTabColor);
-        MiscTable.Insert(1, 1, 250f, cellHeight, Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TIME_SPENT"), cellTextSize, color: GraphHud.HighlightTabColor);
-
-        MiscTable.Insert(2, 0, 250f, cellHeight, "", cellTextSize);
-        MiscTable.Insert(2, 1, 250f, cellHeight, "", cellTextSize);
-
-        MiscTable[0, 0].Text = AnnualRecap.Year.ToString();
-        MiscTable[0, 0].TextColor = AnnualRecap.HardestSubmissions[0].Challenge.Difficulty.Color;
-
-        MiscTable[2, 0].Text = $"{AnnualRecap.GoldberriesPoints:F2} gp ({Utils.GetPercentString(AnnualRecap.GoldberriesPoints, MiscStatInstance.TotalGoldberriesPoints)})";
-
-        MiscTable[2, 1].Text = AnnualRecap.TimeSpent == TimeSpan.Zero ? "-" : $"{AnnualRecap.TimeSpent.TotalHours:F2}h ({Utils.GetPercentString(AnnualRecap.TimeSpent, MiscStatInstance.TotalTimeSpent)})";
 
         for (int i = 0; i < 5; i++) {
+            LongestTable.Insert(0, i + 1, 60f, cellHeight, $"#{i + 1}", cellTextSize);
+            HardestTable.Insert(0, i + 1, 60f, cellHeight, $"#{i + 1}", cellTextSize);
+
             if (i < AnnualRecap.LongestSubmissions.Count) {
                 Submission submission = AnnualRecap.LongestSubmissions[i];
 
-                LongestTable[1, i + 1].Text = submission.FormattedName;
-                LongestTable[1, i + 1].TextColor = submission.Challenge.Difficulty.Color;
-                LongestTable[1, i + 1].TextOutline = true;
-
-                LongestTable[2, i + 1].Text = Utils.Format(submission.TimeTaken.Value);
-                LongestTable[3, i + 1].Text = submission.DateAchieved.ToShortDateString();
+                LongestTable.Insert(1, i + 1, 300f, cellHeight, submission.FormattedName, cellTextSize, textColor: submission.Challenge.Difficulty.Color, outline: true);
+                LongestTable.Insert(2, i + 1, 120f, cellHeight, Utils.Format(submission.TimeTaken.Value), cellTextSize);
+                LongestTable.Insert(3, i + 1, 120f, cellHeight, submission.DateAchieved.ToShortDateString(), cellTextSize);
             } else {
-                LongestTable[1, i + 1].TextColor = Color.Black;
-                LongestTable[1, i + 1].TextOutline = false;
-
-                LongestTable[1, i + 1].Text = "-";
-                LongestTable[2, i + 1].Text = "-";
-                LongestTable[3, i + 1].Text = "-";
+                LongestTable.Insert(1, i + 1, 300f, cellHeight, "-", cellTextSize);
+                LongestTable.Insert(2, i + 1, 120f, cellHeight, "-", cellTextSize);
+                LongestTable.Insert(3, i + 1, 120f, cellHeight, "-", cellTextSize);
             }
 
             if (i < AnnualRecap.HardestSubmissions.Count) {
                 Submission submission = AnnualRecap.HardestSubmissions[i];
 
-                HardestTable[1, i + 1].Text = submission.FormattedName;
-                HardestTable[1, i + 1].TextColor = submission.Challenge.Difficulty.Color;
-                HardestTable[1, i + 1].TextOutline = true;
-
-                HardestTable[2, i + 1].Text = submission.Challenge.Difficulty.Name;
-                HardestTable[2, i + 1].TextColor = submission.Challenge.Difficulty.Color;
-                HardestTable[2, i + 1].TextOutline = true;
-
-                HardestTable[3, i + 1].Text = submission.DateAchieved.ToShortDateString();
+                HardestTable.Insert(1, i + 1, 300f, cellHeight, submission.FormattedName, cellTextSize, textColor: submission.Challenge.Difficulty.Color, outline: true);
+                HardestTable.Insert(2, i + 1, 120f, cellHeight, submission.Challenge.Difficulty.Name, cellTextSize, textColor: submission.Challenge.Difficulty.Color, outline: true);
+                HardestTable.Insert(3, i + 1, 120f, cellHeight, submission.DateAchieved.ToShortDateString(), cellTextSize);
             } else {
-                HardestTable[1, i + 1].TextColor = Color.Black;
-                HardestTable[1, i + 1].TextOutline = false;
-
-                HardestTable[2, i + 1].TextColor = Color.Black;
-                HardestTable[2, i + 1].TextOutline = false;
-
-                HardestTable[1, i + 1].Text = "-";
-                HardestTable[2, i + 1].Text = "-";
-                HardestTable[3, i + 1].Text = "-";
+                HardestTable.Insert(1, i + 1, 300f, cellHeight, "-", cellTextSize);
+                HardestTable.Insert(2, i + 1, 120f, cellHeight, "-", cellTextSize);
+                HardestTable.Insert(3, i + 1, 120f, cellHeight, "-", cellTextSize);
             }
         }
+
+        cellHeight = 40f;
+        cellTextSize = 0.4f;
+        
+        MiscTable.Insert(0, 0, 250f, cellHeight * 2, AnnualRecap.Year.ToString(), 1f, outline: true, color: GraphHud.HighlightTabColor, textColor: AnnualRecap.HardestSubmissions[0].Challenge.Difficulty.Color);
+
+        MiscTable.Insert(1, 0, 250f, cellHeight, Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TOTAL_GP"), cellTextSize, color: GraphHud.HighlightTabColor);
+        MiscTable.Insert(1, 1, 250f, cellHeight, Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TIME_SPENT"), cellTextSize, color: GraphHud.HighlightTabColor);
+
+        MiscTable.Insert(2, 0, 250f, cellHeight, $"{AnnualRecap.GoldberriesPoints:F2} gp ({Utils.GetPercentString(AnnualRecap.GoldberriesPoints, MiscStatInstance.TotalGoldberriesPoints)})", cellTextSize);
+        MiscTable.Insert(2, 1, 250f, cellHeight, AnnualRecap.TimeSpent == TimeSpan.Zero ? "-" : $"{AnnualRecap.TimeSpent.TotalHours:F2}h ({Utils.GetPercentString(AnnualRecap.TimeSpent, MiscStatInstance.TotalTimeSpent)})", cellTextSize);
 
         // Update charts
         TimeSpentLineChart = new LineChart() {
@@ -179,25 +146,20 @@ public class AnnualRecapTab : Tab {
         TimeSpan totalTimeSpent = TimeSpan.Zero;
         double totalGP = 0d;
 
-        for (int i = 1; i <= 12; i++) {
-            TimeSpan timeSpent = TimeSpan.Zero;
-            double gp = 0d;
+        for (int i = 0; i < 12; i++) {
+            MonthlyRecap mr = AnnualRecap.MonthlyRecaps[i];
+
+            TimeSpan timeSpent = mr.TimeSpent;
+            totalTimeSpent += timeSpent;
+
+            double gp = mr.GoldberriesPoints;
+            totalGP += gp;
             
-            MonthlyRecap mr = AnnualRecap.MonthlyRecaps.FirstOrDefault(r => r.Month == i);
+            totalTimeSpentLine.Add(i, totalTimeSpent.TotalSeconds);
+            totalGPLine.Add(i, totalGP);
 
-            if (mr != null) {
-                timeSpent = mr.TimeSpent;
-                totalTimeSpent += timeSpent;
-
-                gp = mr.GoldberriesPoints;
-                totalGP += gp;
-
-                totalTimeSpentLine.Add(i - 1, totalTimeSpent.TotalSeconds);
-                totalGPLine.Add(i - 1, totalGP);
-            }        
-
-            monthlyTimeSpentLine.Add(i - 1, timeSpent.TotalSeconds);
-            monthlyGPLine.Add(i - 1, gp);
+            monthlyTimeSpentLine.Add(i, timeSpent.TotalSeconds);
+            monthlyGPLine.Add(i, gp);
         }
 
         double timeSpentChartYAxisSpacing = totalTimeSpent.TotalHours / 4;

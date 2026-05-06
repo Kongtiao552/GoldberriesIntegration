@@ -114,7 +114,6 @@ public static class StatManager {
     }
 
     public static async Task Fetch(int playerId) {
-        IsFetching = true;
         Utils.Log("Fetching Stats From goldberries.net");
         CheckRootFolder();
 
@@ -135,7 +134,6 @@ public static class StatManager {
         StatsFetched = true;
         SaveStatsFile();
         Initialize(useCache: false);
-        IsFetching = false;
     }
 
     public static bool CheckStatsFile() {

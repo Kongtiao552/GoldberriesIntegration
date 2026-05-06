@@ -9,43 +9,56 @@ public static class ConsoleCommands {
 
     private static GoldberriesIntegrationModuleSettings ModSettings => GoldberriesIntegrationModule.ModSettings;
     private static GoldberriesIntegrationModule Module => GoldberriesIntegrationModule.Instance;
+
+    private static void Log(string log) {
+        Engine.Commands.Log(log);
+    }
     
     [Command("gb_player_id", "get or set the player id")]
     public static void GbPlayerId(string stringPlayerId = null) {
+        if (!ModSettings.StatsEnabled) {
+            Log("This feature is currently disabled!");
+        }
+
         if (string.IsNullOrEmpty(stringPlayerId)) {
-            Engine.Commands.Log($"Player ID: {ModSettings.PlayerId}");
+            Log($"Player ID: {ModSettings.PlayerId}");
             return;
         }
 
         if (!int.TryParse(stringPlayerId, out int playerId) || playerId < 1) {
-            Engine.Commands.Log("Please input a valid player id!");
+            Log("Please input a valid player id!");
             return;
         }
 
         ModSettings.PlayerId = playerId;
         Module.SaveSettings();
-        Engine.Commands.Log($"Player ID set to {playerId}");
+        Log($"Player ID set to {playerId}");
     }
 
     [Command("gb_fetch_stats", "fetch stats from goldberries.net")]
     public static async Task GbFetchStats() {
+        if (!ModSettings.StatsEnabled) {
+            Log("This feature is currently disabled!");
+        }
+
         if (ModSettings.PlayerId < 1) {
-            Engine.Commands.Log("Please set a valid player id before fetching stats!");
+            Log("Please set a valid player id before fetching stats!");
             return;
         }
 
         if (StatManager.IsFetching) {
-            Engine.Commands.Log("Already fetching stats!");
+            Log("Already fetching stats!");
             return;
         }
 
-        Engine.Commands.Log("Fetching stats...");
+        Log("Fetching stats...");
+        StatManager.IsFetching = true;
 
         try {
             await StatManager.Fetch(ModSettings.PlayerId);
-            Engine.Commands.Log("Stats fetched successfully.");
+            Log("Stats fetched successfully.");
         } catch (Exception e) {
-            Engine.Commands.Log($"Error fetching stats: {e}");
+            Log($"Error fetching stats: {e}");
         } finally {
             StatManager.IsFetching = false;
         }

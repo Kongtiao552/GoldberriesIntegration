@@ -1,14 +1,19 @@
 MODOPTION_GOLDBERRIES_INTEGRATION_MODULE_TITLE=Goldberries Integration
 
+MODOPTION_GOLDBERRIES_INTEGRATION_ENABLED=Enabled
 MODOPTION_GOLDBERRIES_INTEGRATION_STATS=Stats
 MODOPTION_GOLDBERRIES_INTEGRATION_GRAPHS=Graphs
 
 MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_VIEW_GRAPHS=View Graphs
 
-MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_VIEW_GRAPHS_DESCRIPTION=Press left to move to the previous tab, and right to move to the next.{n}
-Use the toggle page modifier (it's grab by default, but you can also customize it in keybinds) {n}
-and direction keys to flip between pages.{n}{n}
-Check out the console commands "gb_player_id" and "gb_fetch_stats" for more efficient ways to fetch stats!
+MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_STATS_ENABLED_DESCRIPTION=This feature does a lot of heavy calculations and might increase lag or slow the loading process down. {n}
+This option allows you to disable it when/if you're not using it.
+
+MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_VIEW_GRAPHS_DESCRIPTION=Bind a hotkey or use this button to view graphs!{n}
+Default binds: menu left and menu right for going through tabs, menu keys + <Toggle Page Modifier> {n}
+(grab by default, you can also replace it by binding your own buttons) for navigating on a tab!
+
+MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_FETCH_BUTTON_DESCRIPTION=Check out the console commands "gb_player_id" and "gb_fetch_stats" for more efficient ways to fetch stats!
 
 MODOPTION_GOLDBERRIES_INTEGRATION_GOLDBERRIES_TOGGLE_PAGE_MODIFIER=Toggle Page Modifier
 

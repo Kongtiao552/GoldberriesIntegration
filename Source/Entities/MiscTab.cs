@@ -37,8 +37,8 @@ public class MiscTab : Tab {
         int submissionTablePageAmount = (int) Math.Ceiling(submissionsByTime.Count / TableRowAmountDecimal);
         int verifierTablePageAmount = (int) Math.Ceiling(verifiers.Count / TableRowAmountDecimal);
 
-        int submissionTableCurrentPage = Math.Min(SelectedPage, submissionTablePageAmount);
-        int verifierTableCurrentPage = Math.Min(SelectedPage, verifierTablePageAmount);
+        int submissionTableCurrentPage = Math.Max(Math.Min(SelectedPage, submissionTablePageAmount), 1);
+        int verifierTableCurrentPage = Math.Max(Math.Min(SelectedPage, verifierTablePageAmount), 1);
 
         PageAmount = Math.Max(submissionTablePageAmount, verifierTablePageAmount);
 
