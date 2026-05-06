@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+namespace Celeste.Mod.GoldberriesIntegration.Models;
 
 public class Challenge {
     

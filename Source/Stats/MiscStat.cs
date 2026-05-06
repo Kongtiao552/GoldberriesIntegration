@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+using Celeste.Mod.GoldberriesIntegration.Models;
+using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 
 namespace Celeste.Mod.GoldberriesIntegration.Stats;
@@ -17,17 +18,45 @@ public class MiscStat : GBStat {
     [JsonProperty("total_goldberries_points")]
     public double TotalGoldberriesPoints { get; set; } = 0d;
 
+    [JsonProperty("submissions_by_time")]
+    public List<Submission> SubmissionsByTime { get; set; }
+
+    [JsonProperty("submissions_verified_by_molden_team")]
+    public int SubmissionsVerifiedByMoldenTeam { get; set; } = 0;
+
+    [JsonProperty("verifiers")]
+    // Tuple items:
+    // 1. Verifier name
+    // 2. Verifier account name color (hex)
+    // 3. Number of submissions verified by this verifier
+    public List<Tuple<string, string, int>> Verifiers { get; set; }
+
     public override void Reset() {
         TotalTimeSpent = TimeSpan.Zero;
         TotalGoldberriesPoints = 0d;
+        SubmissionsVerifiedByMoldenTeam = 0;
+
+        SubmissionsByTime?.Clear();
+        Verifiers?.Clear();
     }
 
     public override void CalculateStat(List<Submission> submissions) {
-        List<Submission> unobsoleted = submissions.Where(s => !s.IsObsolete).ToList();
+        List<Submission> timedSubmissions = submissions.Where(s => s.TimeTaken.HasValue).ToList();
 
-        TotalTimeSpent = TimeSpan.FromSeconds(unobsoleted.Where(s => s.TimeTaken.HasValue).Sum(s => s.TimeTaken.Value.TotalSeconds));
-        TotalGoldberriesPoints = unobsoleted.Sum(s => s.Challenge.Difficulty.GP);
+        SubmissionsByTime = timedSubmissions.OrderByDescending(s => s.TimeTaken.Value).ToList();
+        TotalTimeSpent = TimeSpan.FromSeconds(timedSubmissions.Sum(s => s.TimeTaken.Value.TotalSeconds));
+        TotalGoldberriesPoints = submissions.Sum(s => s.Challenge.Difficulty.GP);
+
+        SubmissionsVerifiedByMoldenTeam = submissions.Count(s => s.Verifier == null);
+
+        Verifiers = submissions
+            .Where(s => s.Verifier != null)
+            .GroupBy(s => s.Verifier)
+            .Select(g => new Tuple<string, string, int>(g.Key.Name, g.Key.Account.NameColorStart, g.Count()))
+            .ToList();
+
+        Verifiers.Add(new Tuple<string, string, int>("Modded Golden Team", null, SubmissionsVerifiedByMoldenTeam));
+        Verifiers = Verifiers.OrderByDescending(v => v.Item3).ToList();
     }
-
     
 }

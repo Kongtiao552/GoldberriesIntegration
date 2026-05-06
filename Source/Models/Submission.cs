@@ -1,9 +1,7 @@
 using System;
-using System.Runtime.Serialization;
-using MonoMod.Core.Utils;
 using Newtonsoft.Json;
 
-namespace Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+namespace Celeste.Mod.GoldberriesIntegration.Models;
 
 public class Submission {
 

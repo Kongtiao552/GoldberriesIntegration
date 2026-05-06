@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.AccessControl;
 using System.Text;
 using Celeste.Mod.GoldberriesIntegration.Misc;
-using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+using Celeste.Mod.GoldberriesIntegration.Models;
 using Celeste.Mod.GoldberriesIntegration.Stats;
 using Microsoft.Xna.Framework;
 using Monocle;

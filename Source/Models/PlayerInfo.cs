@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+namespace Celeste.Mod.GoldberriesIntegration.Models;
 
 public class PlayerInfo {
     
@@ -15,5 +15,13 @@ public class PlayerInfo {
 
     [JsonProperty("account")]
     public PlayerAccount Account { get; set; }
+
+    public override bool Equals(object obj) {
+        return obj != null && obj is PlayerInfo other && other.Id == Id;
+    }
+
+    public override int GetHashCode() {
+        return Id.GetHashCode();
+    }
 
 }

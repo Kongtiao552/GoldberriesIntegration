@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+using Celeste.Mod.GoldberriesIntegration.Models;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 
@@ -22,7 +22,7 @@ public class GoldenTier {
         Tier = tier;
         TierString = "Tier " + Tier;
 
-        Color = StatManager.TierColors[TierString];
+        Color = Difficulty.Colors[Tier];
     }
 
     [JsonProperty("has_been_done")]

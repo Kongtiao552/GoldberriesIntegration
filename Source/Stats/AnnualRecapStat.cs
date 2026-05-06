@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+using Celeste.Mod.GoldberriesIntegration.Models;
 using Newtonsoft.Json;
 
 namespace Celeste.Mod.GoldberriesIntegration.Stats;
@@ -12,10 +12,10 @@ public class AnnualRecapStat : GBStat {
     public static AnnualRecapStat Instance { get; } = new AnnualRecapStat();
 
     [JsonProperty("annual_recaps")]
-    public List<AnnualRecap> AnnualRecaps { get; set; } = new List<AnnualRecap>();
+    public List<AnnualRecap> AnnualRecaps { get; set; }
 
     public override void Reset() {
-        AnnualRecaps.Clear();
+        AnnualRecaps?.Clear();
     }
 
     public override void CalculateStat(List<Submission> submissions) {
@@ -23,19 +23,16 @@ public class AnnualRecapStat : GBStat {
             .GroupBy(s => s.DateAchieved.Year)
             .Select(g => {
                 List<Submission> submissionList = g.ToList();
-                List<Submission> unobsoleted = submissionList.Where(s => !s.IsObsolete).ToList();
-                List<Submission> unobsoletedWithTime = unobsoleted.Where(s => s.TimeTaken.HasValue).ToList();
+                List<Submission> timedSubmissions = submissionList.Where(s => s.TimeTaken.HasValue).ToList();
 
                 List<MonthlyRecap> monthlyRecaps = submissionList
                     .GroupBy(s => s.DateAchieved.Month)
                     .Select(g1 => {
-                        List<Submission> monthlyUnobsoleted = g1.Where(s => !s.IsObsolete).ToList();
-
                         return new MonthlyRecap() {
                             Month = g1.Key,
 
                             TimeSpent = TimeSpan.FromSeconds(
-                                monthlyUnobsoleted.Where(
+                                g1.Where(
                                     s => s.TimeTaken.HasValue
                                 ).Sum(
                                     s => s.TimeTaken.Value.TotalSeconds
@@ -50,22 +47,19 @@ public class AnnualRecapStat : GBStat {
                     Year = g.Key,
                     SubmissionCount = submissionList.Count,
 
-                    GoldberriesPoints = unobsoleted.Sum(s => s.Challenge.Difficulty.GP),
+                    GoldberriesPoints = submissionList.Sum(s => s.Challenge.Difficulty.GP),
 
-                    TimeSpent = TimeSpan.FromSeconds(unobsoletedWithTime.Sum(s => s.TimeTaken.Value.TotalSeconds)),
+                    TimeSpent = TimeSpan.FromSeconds(timedSubmissions.Sum(s => s.TimeTaken.Value.TotalSeconds)),
 
                     HardestSubmissions = submissionList.OrderByDescending(
-                        s => s.Challenge.Difficulty.Tier
+                        s => s.Challenge.Difficulty.Sort
                     ).Take(5).ToList(),
 
-                    LongestSubmissions = unobsoletedWithTime.OrderByDescending(
+                    LongestSubmissions = timedSubmissions.OrderByDescending(
                         s => s.TimeTaken.Value.TotalMinutes
                     ).Take(5).ToList(),
 
                     MonthlyRecaps = monthlyRecaps,
-                    
-                    MonthlyRecapMaxTimeSpent = monthlyRecaps.Max(mr => mr.TimeSpent),
-                    MonthlyRecapMaxGP = monthlyRecaps.Max(mr => mr.GoldberriesPoints)
                 };
             }).OrderBy(ar => ar.Year).ToList();
     }

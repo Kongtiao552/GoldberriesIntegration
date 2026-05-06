@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+using Celeste.Mod.GoldberriesIntegration.Models;
 using Newtonsoft.Json;
 
 namespace Celeste.Mod.GoldberriesIntegration.Stats;
@@ -29,12 +29,5 @@ public class AnnualRecap {
 
     [JsonProperty("monthly_recaps")]
     public List<MonthlyRecap> MonthlyRecaps { get; set; }
-
-    [JsonConverter(typeof(TimeSpanConverter))]
-    [JsonProperty("monthly_recap_max_time_spent")]
-    public TimeSpan MonthlyRecapMaxTimeSpent { get; set; } = TimeSpan.Zero;
-
-    [JsonProperty("monthly_recap_max_gp")]
-    public double MonthlyRecapMaxGP { get; set; } = 0d;
 
 }

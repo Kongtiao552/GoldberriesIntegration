@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using Celeste.Mod.GoldberriesIntegration.Entities.Graphs;
 using Celeste.Mod.GoldberriesIntegration.Misc;
-using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+using Celeste.Mod.GoldberriesIntegration.Models;
 using Celeste.Mod.GoldberriesIntegration.Stats;
 using Microsoft.Xna.Framework;
 using Monocle;
@@ -27,6 +27,9 @@ public class AnnualRecapTab : Tab {
     private TableHelper LongestTable { get; set; }
     private TableHelper HardestTable { get; set; }
     private TableHelper MiscTable { get; set; }
+
+    private readonly string LongestTableHeader = Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_LONGEST_SUBMISSIONS");
+    private readonly string HardestTableHeader = Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_HARDEST_SUBMISSIONS");
 
     private LineChart TimeSpentLineChart { get; set; }
     private LineChart GPLineChart { get; set; }
@@ -223,9 +226,9 @@ public class AnnualRecapTab : Tab {
         // Render tables
         pointer.Move(0f, 150f);
         ActiveFont.Draw(
-            Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_LONGEST_SUBMISSIONS"),
-            pointer,
-            Vector2.UnitY,
+            LongestTableHeader,
+            pointer.MoveCopy(300f, -10f),
+            new Vector2(0.5f, 1f),
             Vector2.One * 0.4f,
             Color.Black
         );
@@ -236,9 +239,9 @@ public class AnnualRecapTab : Tab {
         pointer.Move(0f, 100f);
 
         ActiveFont.Draw(
-            Dialog.Clean("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_HARDEST_SUBMISSIONS"),
-            pointer,
-            Vector2.UnitY,
+            HardestTableHeader,
+            pointer.MoveCopy(300f, -10f),
+            new Vector2(0.5f, 1f),
             Vector2.One * 0.4f,
             Color.Black
         );

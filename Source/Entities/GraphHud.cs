@@ -40,7 +40,8 @@ public class GraphHud : Entity {
             new TimeSpentTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB1"),
             new GoldberriesPointTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB2"),
             new MilestonesTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB3"),
-            new AnnualRecapTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB4")
+            new AnnualRecapTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB4"),
+            new MiscTab("MODOPTION_GOLDBERRIES_INTEGRATION_STATS_TAB5")
         };
     }
 

@@ -4,10 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Celeste.Mod.GoldberriesIntegration.Misc;
-using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+using Celeste.Mod.GoldberriesIntegration.Models;
 using Microsoft.Xna.Framework;
 using Monocle;
 using Newtonsoft.Json;
@@ -171,33 +170,6 @@ public static class StatManager {
 
     public static string PlayerName { get; set; }
     public static Color PlayerNameColor { get; set; }
-
-    public static Dictionary<string, Color> TierColors { get; } = new Dictionary<string, Color>() {
-        {"Untiered", Calc.HexToColor("#ffffff")},
-        {"Undetermined", Calc.HexToColor("#aaaaaa")},
-        {"Tier 1", Calc.HexToColor("#9696ff")},
-        {"Tier 2", Calc.HexToColor("#93aeff")},
-        {"Tier 3", Calc.HexToColor("#91c8ff")},
-        {"Tier 4", Calc.HexToColor("#8eecff")},
-        {"Tier 5", Calc.HexToColor("#8cffe2")},
-        {"Tier 6", Calc.HexToColor("#89ffb0")},
-        {"Tier 7", Calc.HexToColor("#9bff87")},
-        {"Tier 8", Calc.HexToColor("#b7ff84")},
-        {"Tier 9", Calc.HexToColor("#d5ff82")},
-        {"Tier 10", Calc.HexToColor("#f4ff7f")},
-        {"Tier 11", Calc.HexToColor("#fff47c")},
-        {"Tier 12", Calc.HexToColor("#ffdd7a")},
-        {"Tier 13", Calc.HexToColor("#ffc677")},
-        {"Tier 14", Calc.HexToColor("#ffae75")},
-        {"Tier 15", Calc.HexToColor("#ff9572")},
-        {"Tier 16", Calc.HexToColor("#ff7c70")},
-        {"Tier 17", Calc.HexToColor("#ff6d79")},
-        {"Tier 18", Calc.HexToColor("#ff6daa")},
-        {"Tier 19", Calc.HexToColor("#ff68d9")},
-        {"Tier 20", Calc.HexToColor("#f266ff")},
-        {"Tier 21", Calc.HexToColor("#d863ff")},
-        {"Tier 22", Calc.HexToColor("#bd60ff")}
-    };  
 
     public static int TierCount = 22;
 

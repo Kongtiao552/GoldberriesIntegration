@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Celeste.Mod.GoldberriesIntegration.Misc;
-using Celeste.Mod.GoldberriesIntegration.Models.Goldberries;
+using Celeste.Mod.GoldberriesIntegration.Models;
 using Newtonsoft.Json;
 
 namespace Celeste.Mod.GoldberriesIntegration.Stats;
