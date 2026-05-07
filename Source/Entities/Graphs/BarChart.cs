@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Celeste.Mod.GoldberriesIntegration.Misc;
+using Celeste.Mod.GoldberriesStat.Misc;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration.Entities.Graphs;
+namespace Celeste.Mod.GoldberriesStat.Entities.Graphs;
 
 public class BarChart {
     

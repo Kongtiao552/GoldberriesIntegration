@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Celeste.Mod.GoldberriesIntegration.Models;
+using Celeste.Mod.GoldberriesStat.Models;
 using Newtonsoft.Json;
 
-namespace Celeste.Mod.GoldberriesIntegration.Stats;
+namespace Celeste.Mod.GoldberriesStat.Stats;
 
 public class AnnualRecapStat : GBStat {
 

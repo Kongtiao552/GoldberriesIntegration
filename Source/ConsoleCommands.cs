@@ -1,14 +1,14 @@
 using System;
 using System.Threading.Tasks;
-using Celeste.Mod.GoldberriesIntegration.Stats;
+using Celeste.Mod.GoldberriesStat.Stats;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration;
+namespace Celeste.Mod.GoldberriesStat;
 
 public static class ConsoleCommands {
 
-    private static GoldberriesIntegrationModuleSettings ModSettings => GoldberriesIntegrationModule.ModSettings;
-    private static GoldberriesIntegrationModule Module => GoldberriesIntegrationModule.Instance;
+    private static GoldberriesStatModuleSettings ModSettings => GoldberriesStatModule.ModSettings;
+    private static GoldberriesStatModule Module => GoldberriesStatModule.Instance;
 
     private static void Log(string log) {
         Engine.Commands.Log(log);
@@ -18,6 +18,7 @@ public static class ConsoleCommands {
     public static void GbPlayerId(string stringPlayerId = null) {
         if (!ModSettings.StatsEnabled) {
             Log("This feature is currently disabled!");
+            return;
         }
 
         if (string.IsNullOrEmpty(stringPlayerId)) {
@@ -39,6 +40,7 @@ public static class ConsoleCommands {
     public static async Task GbFetchStats() {
         if (!ModSettings.StatsEnabled) {
             Log("This feature is currently disabled!");
+            return;
         }
 
         if (ModSettings.PlayerId < 1) {

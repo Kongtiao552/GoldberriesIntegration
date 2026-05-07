@@ -1,14 +1,14 @@
 using System;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration.Entities;
+namespace Celeste.Mod.GoldberriesStat.Entities;
 
 public abstract class Tab {
 
     public int SelectedPage { get; set; } = 1;
     public int PageAmount { get; set; } = 1;
 
-    public static GoldberriesIntegrationModuleSettings ModSettings => GoldberriesIntegrationModule.ModSettings;
+    public static GoldberriesStatModuleSettings ModSettings => GoldberriesStatModule.ModSettings;
 
     private string Title { get; set; }
 

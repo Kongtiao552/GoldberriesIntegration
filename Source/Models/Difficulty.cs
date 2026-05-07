@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Celeste.Mod.GoldberriesIntegration.Stats;
+using Celeste.Mod.GoldberriesStat.Stats;
 using Microsoft.Xna.Framework;
 using Monocle;
 using Newtonsoft.Json;
 
-namespace Celeste.Mod.GoldberriesIntegration.Models;
+namespace Celeste.Mod.GoldberriesStat.Models;
 
 public class Difficulty {
     

@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace Celeste.Mod.GoldberriesIntegration.Models;
+namespace Celeste.Mod.GoldberriesStat.Models;
 
 public class VerifierAccount {
     

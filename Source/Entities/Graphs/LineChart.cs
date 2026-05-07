@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Celeste.Mod.GoldberriesIntegration.Misc;
+using Celeste.Mod.GoldberriesStat.Misc;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration.Entities.Graphs;
+namespace Celeste.Mod.GoldberriesStat.Entities.Graphs;
 
 public class LineChart {
 
@@ -77,12 +77,11 @@ public class LineChart {
     public void Render(Vector2 pointer) {
         Draw.Rect(pointer, Width, -Height, Color.Gray * 0.1f);
 
-        RenderLegend(pointer);
-        RenderLines(pointer);
-        //RenderDataPoints(pointer);
+        RenderGridLines(pointer);
         RenderXAxis(pointer);
         RenderYAxis(pointer);
-        RenderGridLines(pointer);
+        RenderLines(pointer);
+        RenderLegend(pointer);
 
         ActiveFont.Draw(Header, pointer.MoveCopy(0f, -Height), Vector2.UnitY, Vector2.One * HeaderSize, Color.Black);
     }

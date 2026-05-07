@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Security.AccessControl;
-using System.Text;
-using Celeste.Mod.GoldberriesIntegration.Misc;
-using Celeste.Mod.GoldberriesIntegration.Models;
-using Celeste.Mod.GoldberriesIntegration.Stats;
+using Celeste.Mod.GoldberriesStat.Misc;
+using Celeste.Mod.GoldberriesStat.Models;
+using Celeste.Mod.GoldberriesStat.Stats;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration.Entities;
+namespace Celeste.Mod.GoldberriesStat.Entities;
 
 public class MilestonesTab : Tab {
 

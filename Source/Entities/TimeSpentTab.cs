@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Celeste.Mod.GoldberriesIntegration.Entities.Graphs;
-using Celeste.Mod.GoldberriesIntegration.Misc;
-using Celeste.Mod.GoldberriesIntegration.Models;
-using Celeste.Mod.GoldberriesIntegration.Stats;
+using Celeste.Mod.GoldberriesStat.Entities.Graphs;
+using Celeste.Mod.GoldberriesStat.Misc;
+using Celeste.Mod.GoldberriesStat.Models;
+using Celeste.Mod.GoldberriesStat.Stats;
 using Microsoft.Xna.Framework;
 
-namespace Celeste.Mod.GoldberriesIntegration.Entities;
+namespace Celeste.Mod.GoldberriesStat.Entities;
 
 public class TimeSpentTab : Tab {
 

@@ -2,24 +2,24 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Celeste.Mod.GoldberriesIntegration.Entities;
-using Celeste.Mod.GoldberriesIntegration.Misc;
-using Celeste.Mod.GoldberriesIntegration.Stats;
+using Celeste.Mod.GoldberriesStat.Entities;
+using Celeste.Mod.GoldberriesStat.Misc;
+using Celeste.Mod.GoldberriesStat.Stats;
 
-namespace Celeste.Mod.GoldberriesIntegration;
+namespace Celeste.Mod.GoldberriesStat;
 
-public class GoldberriesIntegrationModule : EverestModule {
+public class GoldberriesStatModule : EverestModule {
 
-    public static GoldberriesIntegrationModule Instance { get; private set; }
+    public static GoldberriesStatModule Instance { get; private set; }
 
-    public override Type SettingsType => typeof(GoldberriesIntegrationModuleSettings);
+    public override Type SettingsType => typeof(GoldberriesStatModuleSettings);
     
-    public static GoldberriesIntegrationModuleSettings ModSettings => (GoldberriesIntegrationModuleSettings) Instance._Settings;
+    public static GoldberriesStatModuleSettings ModSettings => (GoldberriesStatModuleSettings) Instance._Settings;
 
-    public GoldberriesIntegrationModule() {
+    public GoldberriesStatModule() {
         Instance = this;
 
-        Logger.SetLogLevel(nameof(GoldberriesIntegrationModule), LogLevel.Info);
+        Logger.SetLogLevel(nameof(GoldberriesStatModule), LogLevel.Info);
     }
 
     public override void Load() {

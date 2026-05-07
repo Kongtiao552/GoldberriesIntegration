@@ -1,6 +1,6 @@
-- Name: GoldberriesIntegration
+- Name: GoldberriesStats
   Version: 1.0.0
-  DLL: bin/GoldberriesIntegration.dll
+  DLL: bin/GoldberriesStat.dll
   Dependencies:
     - Name: EverestCore
       Version: 1.5935.0

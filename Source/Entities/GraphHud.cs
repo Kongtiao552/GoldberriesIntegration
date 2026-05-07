@@ -1,15 +1,15 @@
 using System.Collections.Generic;
-using Celeste.Mod.GoldberriesIntegration.Misc;
-using Celeste.Mod.GoldberriesIntegration.Stats;
+using Celeste.Mod.GoldberriesStat.Misc;
+using Celeste.Mod.GoldberriesStat.Stats;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration.Entities;
+namespace Celeste.Mod.GoldberriesStat.Entities;
 
 [Tracked]
 public class GraphHud : Entity {
 
-    public static GoldberriesIntegrationModuleSettings ModSettings => GoldberriesIntegrationModule.ModSettings;
+    public static GoldberriesStatModuleSettings ModSettings => GoldberriesStatModule.ModSettings;
 
     public static readonly float HudPositionX = Engine.Width * 0.1f;
     public static readonly float HudPositionY = Engine.Height * 0.1f;
@@ -131,7 +131,10 @@ public class GraphHud : Entity {
         if (level != null) {
             Visible = true;
             level.Paused = true;
-            UpdateTabs();
+
+            if (StatManager.Initialized) {
+                UpdateTabs();
+            }
         }
     }
 

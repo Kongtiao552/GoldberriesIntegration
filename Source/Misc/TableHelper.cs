@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration.Misc;
+namespace Celeste.Mod.GoldberriesStat.Misc;
 
 public class TableHelper {
     

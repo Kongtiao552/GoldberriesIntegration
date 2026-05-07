@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace Celeste.Mod.GoldberriesIntegration.Menu;
+namespace Celeste.Mod.GoldberriesStat.Menu;
 
 public class DoubleConfirmButton : ColoredButton {
 

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Celeste.Mod.GoldberriesIntegration;
+using Celeste.Mod.GoldberriesStat;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-namespace Celeste.Mod.GoldberriesIntegration.Misc;
+namespace Celeste.Mod.GoldberriesStat.Misc;
 
 public static class Utils {
 

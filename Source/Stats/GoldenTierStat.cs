@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Celeste.Mod.GoldberriesIntegration.Misc;
-using Celeste.Mod.GoldberriesIntegration.Models;
+using Celeste.Mod.GoldberriesStat.Misc;
+using Celeste.Mod.GoldberriesStat.Models;
 using Newtonsoft.Json;
 
-namespace Celeste.Mod.GoldberriesIntegration.Stats;
+namespace Celeste.Mod.GoldberriesStat.Stats;
 
 public class GoldenTierStat : GBStat {
 

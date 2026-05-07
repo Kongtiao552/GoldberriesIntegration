@@ -1,21 +1,21 @@
 using Celeste;
-using Celeste.Mod.GoldberriesIntegration.Stats;
-using Celeste.Mod.GoldberriesIntegration.Menu;
+using Celeste.Mod.GoldberriesStat.Stats;
+using Celeste.Mod.GoldberriesStat.Menu;
 using Microsoft.Xna.Framework;
-using Celeste.Mod.GoldberriesIntegration.Misc;
+using Celeste.Mod.GoldberriesStat.Misc;
 using YamlDotNet.Serialization;
 using System;
-using Celeste.Mod.GoldberriesIntegration.Entities;
+using Celeste.Mod.GoldberriesStat.Entities;
 using Monocle;
 using System.Collections.Generic;
 
-namespace Celeste.Mod.GoldberriesIntegration;
+namespace Celeste.Mod.GoldberriesStat;
 
 [SettingName("MODOPTION_GOLDBERRIES_INTEGRATION_MODULE_TITLE")]
-public class GoldberriesIntegrationModuleSettings : EverestModuleSettings {
+public class GoldberriesStatModuleSettings : EverestModuleSettings {
 
     [SettingIgnore]
-    public static GoldberriesIntegrationModule Module => GoldberriesIntegrationModule.Instance;
+    public static GoldberriesStatModule Module => GoldberriesStatModule.Instance;
 
     [SettingNumberInput(allowNegatives: false)]
     public int PlayerId { get; set; } = 0;

@@ -5,18 +5,18 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Celeste.Mod.GoldberriesIntegration.Misc;
-using Celeste.Mod.GoldberriesIntegration.Models;
+using Celeste.Mod.GoldberriesStat.Misc;
+using Celeste.Mod.GoldberriesStat.Models;
 using Microsoft.Xna.Framework;
 using Monocle;
 using Newtonsoft.Json;
 
-namespace Celeste.Mod.GoldberriesIntegration.Stats;
+namespace Celeste.Mod.GoldberriesStat.Stats;
 
 public static class StatManager {
 
-    public static GoldberriesIntegrationModuleSettings ModSettings => GoldberriesIntegrationModule.ModSettings;
-    public static GoldberriesIntegrationModule Module => GoldberriesIntegrationModule.Instance;
+    public static GoldberriesStatModuleSettings ModSettings => GoldberriesStatModule.ModSettings;
+    public static GoldberriesStatModule Module => GoldberriesStatModule.Instance;
 
     public static bool IsFetching { get; set; } = false;
 
@@ -30,7 +30,7 @@ public static class StatManager {
 
     public static List<Submission> Submissions { get; set; }
 
-    public static readonly string RootFolder = @".\GoldberriesIntegration\";
+    public static readonly string RootFolder = @".\GoldberriesStat\";
  
     public static readonly string PlayerInfoFile = Path.Combine(RootFolder, "player_info.json");
     public static readonly string SubmissionsFile = Path.Combine(RootFolder, "submissions.json");
@@ -69,7 +69,7 @@ public static class StatManager {
         Utils.Log("Initializing Stats...");
 
         foreach (GBStat stat in Stats) {
-            stat.InitializeStat(Submissions);
+            stat.Initialize(Submissions);
         }
 
         Initialized = true;
